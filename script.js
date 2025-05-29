@@ -250,6 +250,15 @@ const healthText = document.getElementById('healthText');
     distanceSinceLastHealthDrop %= 100;
   }
 
+// Показать кнопку "Закрыть"
+Telegram.WebApp.MainButton.text = "Закрыть";
+Telegram.WebApp.MainButton.show();
+Telegram.WebApp.MainButton.onClick(() => Telegram.WebApp.close());
+
+// Получить данные пользователя
+const user = Telegram.WebApp.initDataUnsafe.user;
+console.log("Игрок:", user.first_name);
+      
   updateUI();
   saveGame();
 }, 1000);
