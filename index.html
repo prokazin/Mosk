@@ -2,263 +2,212 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Москвич Кликер</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Москвич 412 Кликер</title>
+  <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f0f0f0;
-      margin: 0; padding: 20px;
+      background: #fff;
+      margin: 20px;
       text-align: center;
-      color: #333;
-    }
-    h1 {
-      font-size: 3em;
-      margin-bottom: 10px;
-    }
-    .container {
-      max-width: 400px;
-      margin: 0 auto;
-      background: white;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    .stats p {
-      font-size: 1.2em;
-      margin: 6px 0;
-    }
-    .retro-label {
-      font-weight: bold;
-      color: #555;
     }
     .car-img {
-      width: 200px;
-      margin: 20px 0;
+      width: 300px;
       cursor: pointer;
       user-select: none;
     }
     .tabs {
-      margin-bottom: 15px;
+      margin-top: 20px;
     }
     .tab-btn {
-      cursor: pointer;
-      padding: 10px 15px;
       margin: 0 5px;
-      border: none;
-      background: #ddd;
-      border-radius: 5px;
-      font-weight: bold;
-      transition: background 0.3s;
-    }
-    .tab-btn:hover {
-      background: #bbb;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
     }
     .tab-content {
+      margin-top: 20px;
       display: none;
-      text-align: left;
     }
     .tab-content.active {
       display: block;
     }
-    button.upgrade-btn, button.repair-btn {
-      display: block;
-      width: 100%;
-      margin: 8px 0;
-      padding: 10px;
-      font-size: 1em;
-      border-radius: 5px;
-      border: 1px solid #888;
-      background: #eee;
-      cursor: pointer;
-      user-select: none;
-    }
-    button.upgrade-btn:disabled, button.repair-btn:disabled {
+    button:disabled {
       opacity: 0.5;
       cursor: not-allowed;
-    }
-    ul#leaderList {
-      list-style: none;
-      padding-left: 0;
-    }
-    ul#leaderList li {
-      margin: 6px 0;
-      font-size: 1.1em;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>МОСКВИЧ</h1>
+  <h1>МОСКВИЧ</h1>
 
-    <div class="stats">
-      <p><span class="retro-label">Пробег:</span> <span id="score">0</span> км</p>
-      <p><span class="retro-label">Скорость:</span> <span id="perSecond">0</span> км/ч</p>
-    </div>
+  <div class="stats">
+    <p><span class="retro-label">Пробег:</span> <span id="score">0</span> км</p>
+    <p><span class="retro-label">Скорость:</span> <span id="perSecond">0</span> км/ч</p>
+  </div>
 
-    <img src="https://i.imgur.com/5M43qwB.png" class="car-img" id="clickBtn" alt="Москвич 412" />
+  <!-- Вернул картинку как у тебя -->
+  <img src="images/moskvich.png" class="car-img" id="clickBtn" alt="Москвич 412" />
 
-    <div class="tabs">
-      <button class="tab-btn" data-tab="tuning">⚙️ Тюнинг</button>
-      <button class="tab-btn" data-tab="repair">🔧 Ремонт</button>
-      <button class="tab-btn" data-tab="leaders">🏁 Лидеры</button>
-    </div>
+  <div class="tabs">
+    <button class="tab-btn" onclick="showTab('tuning')">⚙️ Тюнинг</button>
+    <button class="tab-btn" onclick="showTab('repair')">🔧 Ремонт</button>
+    <button class="tab-btn" onclick="showTab('leaders')">🏁 Лидеры</button>
+  </div>
 
-    <div id="tuning" class="tab-content active">
-      <h3>⚙️ Тюнинг:</h3>
-      <button class="upgrade-btn" id="upgrade1">Карбюратор (+5 км/ч) - 10 км</button>
-      <button class="upgrade-btn" id="upgrade2">Турбонаддув (+2 км за клик) - 50 км</button>
-      <button class="upgrade-btn" id="upgrade3">Спойлер (+20 км/ч) - 200 км</button>
-    </div>
+  <div id="tuning" class="tab-content active">
+    <h3>⚙️ Тюнинг:</h3>
+    <button class="upgrade-btn" id="upgrade1">Карбюратор (+5 км/ч) - 10 км</button>
+    <button class="upgrade-btn" id="upgrade2">Турбонаддув (+2 км за клик) - 50 км</button>
+    <button class="upgrade-btn" id="upgrade3">Спойлер (+20 км/ч) - 200 км</button>
+  </div>
 
-    <div id="repair" class="tab-content">
-      <h3>🔧 Ремонт:</h3>
-      <button class="repair-btn" id="fixClutch">Починить сцепление (100 км)</button>
-      <button class="repair-btn" id="addCoolant">Залить тосол (150 км)</button>
-      <button class="repair-btn" id="tuneJets">Подкрутить жиклёры (200 км)</button>
-    </div>
+  <div id="repair" class="tab-content">
+    <h3>🔧 Ремонт:</h3>
+    <button class="repair-btn" id="fixClutch">Починить сцепление (100 км)</button>
+    <button class="repair-btn" id="addCoolant">Залить тосол (150 км)</button>
+    <button class="repair-btn" id="tuneJets">Подкрутить жиклёры (200 км)</button>
+  </div>
 
-    <div id="leaders" class="tab-content">
-      <h3>🏁 Лучшие водители:</h3>
-      <ul id="leaderList">
-        <li>🏅 Легенда капота — 15000 км</li>
-        <li>👴 Ветеран трамблёра — 10000 км</li>
-        <li>🛠 Мастер кольца — 7500 км</li>
-      </ul>
-    </div>
+  <div id="leaders" class="tab-content">
+    <h3>🏁 Лучшие водители:</h3>
+    <ul id="leaderList">
+      <li>🏅 Легенда капота — 15000 км</li>
+      <li>👴 Ветеран трамблёра — 10000 км</li>
+      <li>🛠 Мастер кольца — 7500 км</li>
+    </ul>
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Инициализация значений из localStorage или по умолчанию
-      let score = parseInt(localStorage.getItem('score')) || 0;
-      let basePerClick = parseFloat(localStorage.getItem('basePerClick')) || 1;
-      let basePerSecond = parseFloat(localStorage.getItem('basePerSecond')) || 0;
+    let score = parseInt(localStorage.getItem('score')) || 0;
+    let perClick = parseInt(localStorage.getItem('perClick')) || 1;
+    let perSecond = parseInt(localStorage.getItem('perSecond')) || 0;
+    let lastWearCheck = parseInt(localStorage.getItem('lastWearCheck')) || 0;
 
-      const scoreElem = document.getElementById('score');
-      const perSecondElem = document.getElementById('perSecond');
-      const clickBtn = document.getElementById('clickBtn');
+    const scoreElement = document.getElementById('score');
+    const perSecondElement = document.getElementById('perSecond');
+    const clickBtn = document.getElementById('clickBtn');
 
-      // Вкладки
-      const tabButtons = document.querySelectorAll('.tab-btn');
-      const tabContents = document.querySelectorAll('.tab-content');
+    const upgrade1Btn = document.getElementById('upgrade1');
+    const upgrade2Btn = document.getElementById('upgrade2');
+    const upgrade3Btn = document.getElementById('upgrade3');
 
-      // Кнопки улучшений и ремонта
-      const upgrade1Btn = document.getElementById('upgrade1');
-      const upgrade2Btn = document.getElementById('upgrade2');
-      const upgrade3Btn = document.getElementById('upgrade3');
-      const fixClutchBtn = document.getElementById('fixClutch');
-      const addCoolantBtn = document.getElementById('addCoolant');
-      const tuneJetsBtn = document.getElementById('tuneJets');
+    const fixClutchBtn = document.getElementById('fixClutch');
+    const addCoolantBtn = document.getElementById('addCoolant');
+    const tuneJetsBtn = document.getElementById('tuneJets');
 
-      // Обновить отображение на странице
-      function updateUI() {
-        scoreElem.textContent = Math.floor(score);
-        perSecondElem.textContent = basePerSecond.toFixed(1);
+    function updateUI() {
+      scoreElement.textContent = Math.floor(score);
+      perSecondElement.textContent = perSecond;
+      upgrade1Btn.disabled = score < 10;
+      upgrade2Btn.disabled = score < 50;
+      upgrade3Btn.disabled = score < 200;
+      fixClutchBtn.disabled = score < 100;
+      addCoolantBtn.disabled = score < 150;
+      tuneJetsBtn.disabled = score < 200;
+    }
 
-        upgrade1Btn.disabled = score < 10;
-        upgrade2Btn.disabled = score < 50;
-        upgrade3Btn.disabled = score < 200;
+    function saveProgress() {
+      localStorage.setItem('score', score);
+      localStorage.setItem('perClick', perClick);
+      localStorage.setItem('perSecond', perSecond);
+      localStorage.setItem('lastWearCheck', lastWearCheck);
+    }
 
-        fixClutchBtn.disabled = score < 100;
-        addCoolantBtn.disabled = score < 150;
-        tuneJetsBtn.disabled = score < 200;
-      }
-
-      // Сохранение в localStorage
-      function save() {
-        localStorage.setItem('score', score);
-        localStorage.setItem('basePerClick', basePerClick);
-        localStorage.setItem('basePerSecond', basePerSecond);
-      }
-
-      // Клик по машине — увеличиваем пробег
-      clickBtn.addEventListener('click', () => {
-        score += basePerClick;
+    function checkWear() {
+      const wearThreshold = Math.min(500 + Math.floor(score / 1000) * 100, 3000); // увеличивается с пробегом, до 3к км
+      if (score - lastWearCheck >= wearThreshold) {
+        lastWearCheck = score;
+        perClick = Math.max(1, perClick - 1);
+        perSecond = Math.max(0, perSecond - 2);
+        alert("⚙️ Износ сцепления! Скорость и клики снижены.");
         updateUI();
-        save();
-      });
+      }
+    }
 
-      // Автоматическое прибавление скорости (perSecond) каждую секунду
-      setInterval(() => {
-        score += basePerSecond;
-        updateUI();
-        save();
-      }, 1000);
-
-      // Обработчик вкладок
-      tabButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const tab = btn.getAttribute('data-tab');
-          tabContents.forEach(tc => {
-            if(tc.id === tab) {
-              tc.classList.add('active');
-            } else {
-              tc.classList.remove('active');
-            }
-          });
-        });
-      });
-
-      // Улучшения
-      upgrade1Btn.addEventListener('click', () => {
-        if(score >= 10) {
-          score -= 10;
-          basePerSecond += 5;
-          updateUI();
-          save();
-        }
-      });
-
-      upgrade2Btn.addEventListener('click', () => {
-        if(score >= 50) {
-          score -= 50;
-          basePerClick += 2;
-          updateUI();
-          save();
-        }
-      });
-
-      upgrade3Btn.addEventListener('click', () => {
-        if(score >= 200) {
-          score -= 200;
-          basePerSecond += 20;
-          updateUI();
-          save();
-        }
-      });
-
-      // Ремонт
-      fixClutchBtn.addEventListener('click', () => {
-        if(score >= 100) {
-          score -= 100;
-          alert('Сцепление починено!');
-          updateUI();
-          save();
-        }
-      });
-
-      addCoolantBtn.addEventListener('click', () => {
-        if(score >= 150) {
-          score -= 150;
-          alert('Тосол залит!');
-          updateUI();
-          save();
-        }
-      });
-
-      tuneJetsBtn.addEventListener('click', () => {
-        if(score >= 200) {
-          score -= 200;
-          alert('Жиклёры подкручены!');
-          updateUI();
-          save();
-        }
-      });
-
-      // Первый апдейт UI
+    function addScore() {
+      score += perClick;
+      checkWear();
       updateUI();
+      saveProgress();
+    }
+
+    clickBtn.addEventListener('click', addScore);
+
+    upgrade1Btn.addEventListener('click', () => {
+      if (score >= 10) {
+        score -= 10;
+        perSecond += 5;
+        updateUI();
+        saveProgress();
+      }
     });
+
+    upgrade2Btn.addEventListener('click', () => {
+      if (score >= 50) {
+        score -= 50;
+        perClick += 2;
+        updateUI();
+        saveProgress();
+      }
+    });
+
+    upgrade3Btn.addEventListener('click', () => {
+      if (score >= 200) {
+        score -= 200;
+        perSecond += 20;
+        updateUI();
+        saveProgress();
+      }
+    });
+
+    fixClutchBtn.addEventListener('click', () => {
+      if (score >= 100) {
+        score -= 100;
+        perSecond += 2;
+        alert("✅ Сцепление отрегулировано!");
+        updateUI();
+        saveProgress();
+      }
+    });
+
+    addCoolantBtn.addEventListener('click', () => {
+      if (score >= 150) {
+        score -= 150;
+        perClick += 1;
+        alert("✅ Тосол залит!");
+        updateUI();
+        saveProgress();
+      }
+    });
+
+    tuneJetsBtn.addEventListener('click', () => {
+      if (score >= 200) {
+        score -= 200;
+        perClick += 1;
+        perSecond += 1;
+        alert("✅ Жиклёры подкручены!");
+        updateUI();
+        saveProgress();
+      }
+    });
+
+    setInterval(() => {
+      score += perSecond;
+      checkWear();
+      updateUI();
+      saveProgress();
+    }, 1000);
+
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    updateUI();
   </script>
 </body>
 </html>
