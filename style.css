@@ -1,52 +1,104 @@
-.container {
-  max-width: 400px;
-  margin: 0 auto;
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f4f4f4;
+  color: #333;
+  text-align: center;
+  margin: 0;
   padding: 20px;
-  font-family: 'Arial', sans-serif;
-  background-color: #f0f0f0;
+}
+
+.container {
+  max-width: 480px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 20px;
   border-radius: 12px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  box-shadow: 0 0 12px rgba(0,0,0,0.1);
 }
 
 h1 {
-  text-align: center;
+  margin-bottom: 10px;
+  font-size: 24px;
 }
 
-.stats, .upgrades, .repairs, .leaderboard {
-  margin-top: 20px;
+.stats p {
+  margin: 5px 0;
+  font-size: 16px;
 }
 
 .retro-label {
   font-weight: bold;
+  color: #c0392b;
 }
 
 .car-img {
   width: 100%;
-  margin: 10px 0;
+  max-width: 300px;
+  cursor: pointer;
+  margin: 20px 0;
+  transition: transform 0.1s;
 }
 
-.clicker-btn, .upgrade-btn, .repair-btn {
+.car-img:active {
+  transform: scale(0.98);
+}
+
+.tabs {
+  margin: 20px 0 10px;
+}
+
+.tab-btn {
+  background: #2980b9;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  margin: 0 5px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.tab-btn:hover {
+  background: #3498db;
+}
+
+.tab-content {
+  margin-top: 10px;
+}
+
+.upgrade-btn, .repair-btn {
   display: block;
   width: 100%;
-  margin: 5px 0;
+  margin: 6px 0;
   padding: 10px;
-  font-size: 16px;
+  background-color: #27ae60;
   border: none;
-  border-radius: 6px;
-  background-color: #005bbb;
   color: white;
+  font-size: 15px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background 0.2s;
 }
 
-.clicker-btn:hover, .upgrade-btn:hover, .repair-btn:hover {
-  background-color: #003f7f;
+.upgrade-btn:hover, .repair-btn:hover {
+  background-color: #2ecc71;
 }
 
-.leaderboard ul {
-  padding-left: 20px;
+.upgrade-btn:disabled, .repair-btn:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
 }
 
-.leaderboard li {
-  margin-bottom: 4px;
+ul#leaderList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#leaderList li {
+  background: #ecf0f1;
+  margin: 6px 0;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: bold;
 }
