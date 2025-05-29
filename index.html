@@ -1,145 +1,165 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Москвич 412 Кликер</title>
-  <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
-  <style>
-    /* Фон с анимацией день/ночь и прокруткой */
-    #background {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-image: url('https://raw.githubusercontent.com/prokazin/Mosk/main/images/Fon.JPG');
-      background-repeat: repeat-x;
-      background-size: auto 100%;
-      background-position-x: 0;
-      animation: bgScroll 60s linear infinite, dayNightCycle 60s linear infinite;
-      z-index: -1;
-      opacity: 0.95;
-    }
-    @keyframes bgScroll {
-      from { background-position-x: 0; }
-      to { background-position-x: 1000px; }
-    }
-    @keyframes dayNightCycle {
-      0% { filter: brightness(1); }
-      50% { filter: brightness(0.4); }
-      100% { filter: brightness(1); }
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Москвич 412 Кликер</title>
+<script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+<style>
+  /* Плавная смена фона день/ночь */
+  #background {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url('https://raw.githubusercontent.com/prokazin/Mosk/main/images/Fon.JPG');
+    background-repeat: repeat-x;
+    background-size: auto 100%;
+    background-position-x: 0;
+    animation: bgScroll 60s linear infinite;
+    z-index: -1;
+    opacity: 0.9;
+    transition: background-color 5s ease;
+  }
+  @keyframes bgScroll {
+    from { background-position-x: 0; }
+    to { background-position-x: 1000px; }
+  }
+  body.day #background {
+    background-color: rgba(135,206,250,0.3);
+  }
+  body.night #background {
+    background-color: rgba(15,15,40,0.7);
+  }
 
-    body, html {
-      margin: 0; padding: 0;
-      font-family: Arial, sans-serif;
-      background: transparent;
-      height: 100vh;
-      overflow-x: hidden;
-    }
+  body, html {
+    margin: 0; padding: 0; font-family: Arial, sans-serif; background: transparent;
+    height: 100vh; overflow-x: hidden;
+  }
+  .container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 20px;
+    background: rgba(255 255 255 / 0.85);
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    position: relative;
+    z-index: 1;
+  }
 
-    .container {
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 20px;
-      background: rgba(255,255,255,0.85);
-      border-radius: 8px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
-      position: relative;
-      z-index: 1;
-    }
+  h1 {
+    text-align: center;
+    margin-bottom: 12px;
+    font-weight: bold;
+    font-size: 2.5rem;
+    animation: fadeIn 2s ease forwards;
+    opacity: 0;
+  }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 12px;
-      font-weight: bold;
-      font-size: 2.5rem;
-    }
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
 
-    .stats {
-      display: flex;
-      justify-content: space-around;
-      margin-bottom: 10px;
-    }
-    .retro-label {
-      font-weight: 600;
-    }
+  .stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 10px;
+  }
+  .retro-label {
+    font-weight: 600;
+  }
 
-    .car-img {
-      display: block;
-      margin: 0 auto 15px auto;
-      width: 250px;
-      cursor: pointer;
-      user-select: none;
-    }
+  .car-img {
+    display: block;
+    margin: 0 auto 15px auto;
+    width: 250px;
+    cursor: pointer;
+    user-select: none;
+  }
 
-    .tabs {
-      display: flex;
-      justify-content: space-around;
-      margin-bottom: 15px;
-    }
-    .tab-btn {
-      padding: 8px 14px;
-      font-size: 1rem;
-      cursor: pointer;
-      border: none;
-      background: #3b5998;
-      color: white;
-      border-radius: 5px;
-    }
-    .tab-btn:hover {
-      background: #2d4373;
-    }
+  .tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 15px;
+  }
+  .tab-btn {
+    padding: 8px 14px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    background: #3b5998;
+    color: white;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  .tab-btn:hover {
+    background: #2d4373;
+  }
 
-    .tab-content {
-      display: none;
-    }
-    .tab-content.active {
-      display: block;
-    }
+  .tab-content {
+    display: none;
+  }
+  .tab-content.active {
+    display: block;
+  }
 
-    .upgrade-btn, .repair-btn {
-      display: block;
-      margin: 8px 0;
-      padding: 8px 10px;
-      width: 100%;
-      font-size: 1rem;
-      cursor: pointer;
-      border-radius: 5px;
-      border: 1px solid #3b5998;
-      background: #e7f0ff;
-    }
+  .upgrade-btn, .repair-btn {
+    display: block;
+    margin: 8px 0;
+    padding: 8px 10px;
+    width: 100%;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 1px solid #3b5998;
+    background: #e7f0ff;
+    transition: background-color 0.3s ease;
+  }
+  .upgrade-btn:hover:not(:disabled),
+  .repair-btn:hover:not(:disabled) {
+    background: #c4d9ff;
+  }
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
-    .upgrade-btn:hover:not(:disabled),
-    .repair-btn:hover:not(:disabled) {
-      background: #c4d9ff;
-    }
+  #notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fffae6;
+    border: 1px solid #ffc107;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(255,193,7,0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    z-index: 9999;
+  }
+  #notification.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
 
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+  #leaderList {
+    list-style: none;
+    padding-left: 0;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  #leaderList li {
+    padding: 5px 0;
+    border-bottom: 1px solid #ddd;
+  }
 
-    #notification {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #fffae6;
-      border: 1px solid #ffc107;
-      padding: 10px 20px;
-      border-radius: 6px;
-      font-weight: 600;
-      box-shadow: 0 0 10px rgba(255,193,7,0.5);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.5s ease;
-      z-index: 9999;
-    }
-
-    #notification.show {
-      opacity: 1;
-      pointer-events: auto;
-    }
-  </style>
+  #playerRank {
+    margin-top: 10px;
+    font-weight: 700;
+    text-align: center;
+  }
+</style>
 </head>
 <body>
   <div id="background"></div>
@@ -152,7 +172,7 @@
       <p><span class="retro-label">Скорость:</span> <span id="perSecond">0</span> км/ч</p>
     </div>
 
-    <img src="https://raw.githubusercontent.com/prokazin/Mosk/main/images/moskvich.png" alt="Москвич 412" id="clickBtn" class="car-img">
+    <img src="https://raw.githubusercontent.com/prokazin/Mosk/main/images/moskvich.png" alt="Москвич 412" id="clickBtn" class="car-img" draggable="false">
 
     <div class="tabs">
       <button class="tab-btn" data-tab="tuning">⚙️ Тюнинг</button>
@@ -162,183 +182,273 @@
 
     <div class="tab-content" id="tuning">
       <h3>⚙️ Тюнинг:</h3>
-      <button class="upgrade-btn" id="upgrade1">Карбюратор (+5 км/ч) - 5 км</button>
-      <button class="upgrade-btn" id="upgrade2">Турбонаддув (+2 км за клик) - 20 км</button>
-      <button class="upgrade-btn" id="upgrade3">Спойлер (+20 км/ч) - 50 км</button>
+      <button class="upgrade-btn" id="upgrade1">Карбюратор (+3 км/ч) - 5 км</button>
+      <button class="upgrade-btn" id="upgrade2">Турбонаддув (+1 км за клик) - 25 км</button>
+      <button class="upgrade-btn" id="upgrade3">Спойлер (+10 км/ч) - 100 км</button>
     </div>
 
     <div class="tab-content" id="repair">
       <h3>🔧 Ремонт:</h3>
-      <button class="repair-btn" id="fixClutch">Починить сцепление (25 км)</button>
-      <button class="repair-btn" id="addCoolant">Залить тосол (40 км)</button>
-      <button class="repair-btn" id="tuneJets">Подкрутить жиклёры (60 км)</button>
+      <button class="repair-btn" id="fixClutch">Починить сцепление (50 км)</button>
+      <button class="repair-btn" id="addCoolant">Залить тосол (75 км)</button>
+      <button class="repair-btn" id="tuneJets">Подкрутить жиклёры (100 км)</button>
     </div>
 
     <div class="tab-content" id="leaders">
       <h3>🏁 Лучшие водители:</h3>
       <ul id="leaderList">
-        <li>🏅 Легенда капота — 15000 км</li>
-        <li>👴 Ветеран трамблёра — 10000 км</li>
-        <li>🛠 Мастер кольца — 7500 км</li>
+        <li>Загрузка...</li>
       </ul>
+      <div id="playerRank"></div>
     </div>
   </div>
 
   <div id="notification"></div>
 
-  <script>
-    vkBridge.send('VKWebAppInit');
+<script>
+  const APP_ID = 53646023;
 
-    let score = parseInt(localStorage.getItem('score')) || 0;
-    let perClick = parseInt(localStorage.getItem('perClick')) || 1;
-    let perSecond = parseInt(localStorage.getItem('perSecond')) || 0;
-    let lastWearCheck = parseInt(localStorage.getItem('lastWearCheck')) || 0;
+  vkBridge.send('VKWebAppInit');
 
-    const scoreElement = document.getElementById('score');
-    const perSecondElement = document.getElementById('perSecond');
-    const clickBtn = document.getElementById('clickBtn');
+  let score = parseFloat(localStorage.getItem('score')) || 0;
+  let perClick = parseInt(localStorage.getItem('perClick')) || 1;
+  let perSecond = parseInt(localStorage.getItem('perSecond')) || 0;
+  let lastWearCheck = parseInt(localStorage.getItem('lastWearCheck')) || 0;
 
-    const upgrade1Btn = document.getElementById('upgrade1');
-    const upgrade2Btn = document.getElementById('upgrade2');
-    const upgrade3Btn = document.getElementById('upgrade3');
+  const scoreElement = document.getElementById('score');
+  const perSecondElement = document.getElementById('perSecond');
+  const clickBtn = document.getElementById('clickBtn');
 
-    const fixClutchBtn = document.getElementById('fixClutch');
-    const addCoolantBtn = document.getElementById('addCoolant');
-    const tuneJetsBtn = document.getElementById('tuneJets');
+  const upgrade1Btn = document.getElementById('upgrade1');
+  const upgrade2Btn = document.getElementById('upgrade2');
+  const upgrade3Btn = document.getElementById('upgrade3');
 
-    const notification = document.getElementById('notification');
-    let notificationTimeout;
+  const fixClutchBtn = document.getElementById('fixClutch');
+  const addCoolantBtn = document.getElementById('addCoolant');
+  const tuneJetsBtn = document.getElementById('tuneJets');
 
-    function showNotification(text) {
-      clearTimeout(notificationTimeout);
-      notification.textContent = text;
-      notification.classList.add('show');
-      notificationTimeout = setTimeout(() => {
-        notification.classList.remove('show');
-      }, 3000);
-    }
+  const notification = document.getElementById('notification');
+  let notificationTimeout;
 
-    function updateUI() {
-      scoreElement.textContent = Math.floor(score);
-      perSecondElement.textContent = perSecond;
-      upgrade1Btn.disabled = score < 5;
-      upgrade2Btn.disabled = score < 20;
-      upgrade3Btn.disabled = score < 50;
+  // Показ уведомления с плавным исчезновением
+  function showNotification(text) {
+    clearTimeout(notificationTimeout);
+    notification.textContent = text;
+    notification.classList.add('show');
+    notificationTimeout = setTimeout(() => {
+      notification.classList.remove('show');
+    }, 3500);
+  }
 
-      fixClutchBtn.disabled = score < 25;
-      addCoolantBtn.disabled = score < 40;
-      tuneJetsBtn.disabled = score < 60;
-    }
+  function updateUI() {
+    scoreElement.textContent = Math.floor(score);
+    perSecondElement.textContent = perSecond;
+    upgrade1Btn.disabled = score < 5;
+    upgrade2Btn.disabled = score < 25;
+    upgrade3Btn.disabled = score < 100;
 
-    function saveProgress() {
-      localStorage.setItem('score', score);
-      localStorage.setItem('perClick', perClick);
-      localStorage.setItem('perSecond', perSecond);
-      localStorage.setItem('lastWearCheck', lastWearCheck);
-    }
+    fixClutchBtn.disabled = score < 50;
+    addCoolantBtn.disabled = score < 75;
+    tuneJetsBtn.disabled = score < 100;
+  }
 
-    function checkWear() {
-      const wearThreshold = 300 + Math.floor(score / 1000) * 500;
-      if (score - lastWearCheck >= wearThreshold) {
-        lastWearCheck = score;
-        perClick = Math.max(1, perClick - 1);
-        perSecond = Math.max(0, perSecond - 2);
-        showNotification("⚙️ Износ сцепления!");
-        updateUI();
-        saveProgress();
-      }
-    }
+  function saveProgress() {
+    localStorage.setItem('score', score);
+    localStorage.setItem('perClick', perClick);
+    localStorage.setItem('perSecond', perSecond);
+    localStorage.setItem('lastWearCheck', lastWearCheck);
+  }
 
-    function addScore() {
-      score += perClick;
-      checkWear();
+  // Износ сцепления: чем больше пробег, тем реже износ
+  function checkWear() {
+    const wearThreshold = 300 + Math.floor(score / 1500) * 700;
+    if (score - lastWearCheck >= wearThreshold) {
+      lastWearCheck = score;
+      perClick = Math.max(1, perClick - 1);
+      perSecond = Math.max(0, perSecond - 1);
+      showNotification("⚙️ Износ сцепления! Скорость и клики снижены.");
       updateUI();
       saveProgress();
     }
+  }
 
-    clickBtn.addEventListener('click', addScore);
-
-    upgrade1Btn.addEventListener('click', () => {
-      if (score >= 5) {
-        score -= 5;
-        perSecond += 5;
-        updateUI();
-        saveProgress();
-      }
-    });
-
-    upgrade2Btn.addEventListener('click', () => {
-      if (score >= 20) {
-        score -= 20;
-        perClick += 2;
-        updateUI();
-        saveProgress();
-      }
-    });
-
-    upgrade3Btn.addEventListener('click', () => {
-      if (score >= 50) {
-        score -= 50;
-        perSecond += 20;
-        updateUI();
-        saveProgress();
-      }
-    });
-
-    fixClutchBtn.addEventListener('click', () => {
-      if (score >= 25) {
-        score -= 25;
-        perClick += 1;
-        perSecond += 3;
-        showNotification("✅ Сцепление отрегулировано!");
-        updateUI();
-        saveProgress();
-      }
-    });
-
-    addCoolantBtn.addEventListener('click', () => {
-      if (score >= 40) {
-        score -= 40;
-        perClick += 1;
-        showNotification("✅ Тосол залит!");
-        updateUI();
-        saveProgress();
-      }
-    });
-
-    tuneJetsBtn.addEventListener('click', () => {
-      if (score >= 60) {
-        score -= 60;
-        perSecond += 10;
-        showNotification("✅ Жиклёры подкручены!");
-        updateUI();
-        saveProgress();
-      }
-    });
-
-    setInterval(() => {
-      score += perSecond / 10;
-      updateUI();
-      saveProgress();
-    }, 1000);
-
-    const tabs = document.querySelectorAll('.tab-btn');
-    const contents = document.querySelectorAll('.tab-content');
-
-    function activateTab(tabName) {
-      contents.forEach(c => {
-        c.classList.toggle('active', c.id === tabName);
-      });
-    }
-
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        activateTab(tab.dataset.tab);
-      });
-    });
-
-    activateTab('tuning');
+  function addScore() {
+    score += perClick;
+    checkWear();
     updateUI();
-  </script>
+    saveProgress();
+  }
+
+  clickBtn.addEventListener('click', addScore);
+
+  upgrade1Btn.addEventListener('click', () => {
+    if (score >= 5) {
+      score -= 5;
+      perSecond += 3;
+      updateUI();
+      saveProgress();
+    }
+  });
+
+  upgrade2Btn.addEventListener('click', () => {
+    if (score >= 25) {
+      score -= 25;
+      perClick += 1;
+      updateUI();
+      saveProgress();
+    }
+  });
+
+  upgrade3Btn.addEventListener('click', () => {
+    if (score >= 100) {
+      score -= 100;
+      perSecond += 10;
+      updateUI();
+      saveProgress();
+    }
+  });
+
+  fixClutchBtn.addEventListener('click', () => {
+    if (score >= 50) {
+      score -= 50;
+      perClick = Math.max(perClick, 1);
+      perSecond = Math.max(perSecond, 0);
+      lastWearCheck = score; // сбросить износ
+      showNotification("🔧 Сцепление починено.");
+      updateUI();
+      saveProgress();
+    }
+  });
+
+  addCoolantBtn.addEventListener('click', () => {
+    if (score >= 75) {
+      score -= 75;
+      perClick += 2;
+      showNotification("🔧 Тосол залит. Клики увеличены.");
+      updateUI();
+      saveProgress();
+    }
+  });
+
+  tuneJetsBtn.addEventListener('click', () => {
+    if (score >= 100) {
+      score -= 100;
+      perSecond += 5;
+      showNotification("🔧 Жиклёры настроены. Скорость увеличена.");
+      updateUI();
+      saveProgress();
+    }
+  });
+
+  // Автонакрутка очков в секунду
+  setInterval(() => {
+    score += perSecond;
+    checkWear();
+    updateUI();
+    saveProgress();
+    sendScoreToVK();
+  }, 1000);
+
+  // Работа с табами
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
+
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-tab');
+      tabContents.forEach(tc => {
+        tc.classList.toggle('active', tc.id === target);
+      });
+    });
+  });
+  // Показываем первый таб по умолчанию
+  tabContents[0].classList.add('active');
+
+  // День и ночь - смена фона по времени
+  function updateDayNight() {
+    const hour = new Date().getHours();
+    if (hour >= 7 && hour < 20) {
+      document.body.classList.add('day');
+      document.body.classList.remove('night');
+    } else {
+      document.body.classList.add('night');
+      document.body.classList.remove('day');
+    }
+  }
+  updateDayNight();
+  setInterval(updateDayNight, 60000);
+
+  // --- VK Mini Apps integration ---
+
+  // Отправка очков в таблицу лидеров ВКонтакте
+  async function sendScoreToVK() {
+    try {
+      await vkBridge.send("VKWebAppGetUserInfo").then(user => {
+        vkBridge.send("VKWebAppCallAPIMethod", {
+          "method": "secure.setScore",
+          "params": {
+            "user_id": user.id,
+            "score": Math.floor(score),
+            "access_token": "",
+            "v": "5.131",
+            "client_id": APP_ID,
+          }
+        });
+      });
+    } catch(e) {
+      console.warn("Не удалось отправить очки в VK:", e);
+    }
+  }
+
+  // Получение топа лидеров и позиции пользователя
+  async function loadLeaderboard() {
+    try {
+      const user = await vkBridge.send("VKWebAppGetUserInfo");
+      const response = await vkBridge.send("VKWebAppCallAPIMethod", {
+        method: "secure.getLeaderboard",
+        params: {
+          type: "global",
+          global: 1,
+          extended: 1,
+          v: "5.131",
+          client_id: APP_ID
+        }
+      });
+      if (response.response) {
+        const leaders = response.response.items || [];
+        const leaderList = document.getElementById('leaderList');
+        leaderList.innerHTML = '';
+        leaders.forEach((item, idx) => {
+          leaderList.insertAdjacentHTML('beforeend', 
+            `<li><b>${idx + 1}.</b> ${item.user.first_name} ${item.user.last_name} — ${item.score} км</li>`
+          );
+        });
+
+        // Позиция текущего игрока
+        const currentUserEntry = leaders.find(l => l.user.id === user.id);
+        const playerRank = document.getElementById('playerRank');
+        if (currentUserEntry) {
+          playerRank.textContent = `Ваше место в рейтинге: ${leaders.indexOf(currentUserEntry) + 1} (очки: ${currentUserEntry.score})`;
+        } else {
+          playerRank.textContent = `Вы пока не в рейтинге.`;
+        }
+      }
+    } catch(e) {
+      console.warn("Ошибка загрузки лидеров VK:", e);
+      const leaderList = document.getElementById('leaderList');
+      leaderList.innerHTML = '<li>Ошибка загрузки рейтинга.</li>';
+    }
+  }
+
+  // Обновлять рейтинг при открытии таба "Лидеры"
+  document.querySelector('[data-tab="leaders"]').addEventListener('click', loadLeaderboard);
+
+  // Изначально отправить очки и загрузить рейтинг
+  sendScoreToVK();
+  loadLeaderboard();
+
+  updateUI();
+
+</script>
 </body>
 </html>
