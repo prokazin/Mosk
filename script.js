@@ -203,6 +203,39 @@ const healthText = document.getElementById('healthText');
     leaderList.appendChild(li);
   });
 
+  function updateUI() {
+  scoreElement.textContent = Math.floor(score);
+  perSecondElement.textContent = perSecond;
+  coinsDisplay.textContent = coins;
+
+  const progress = (clicksCount % GAME_BALANCE.coinsInterval) / GAME_BALANCE.coinsInterval * 100;
+  const remaining = GAME_BALANCE.coinsInterval - (clicksCount % GAME_BALANCE.coinsInterval);
+  coinProgress.style.width = `${progress}%`;
+  progressText.textContent = `${GAME_BALANCE.coinsInterval - remaining}/${GAME_BALANCE.coinsInterval}`;
+
+  // Прогресс здоровья
+  healthValue.textContent = `${Math.floor(health)}%`;
+  healthBar.style.width = `${health}%`;
+  healthText.textContent = `${Math.floor(health)}%`;
+  healthBar.style.background = health > 50 
+    ? 'linear-gradient(90deg, #00cc66, #009933)' 
+    : (health > 20 
+      ? 'linear-gradient(90deg, #ffcc00, #ffaa00)' 
+      : 'linear-gradient(90deg, #ff4444, #cc0000)');
+
+  // Блокировать кнопку при 0% здоровья
+  clickBtn.style.opacity = health <= 0 ? 0.5 : 1;
+  clickBtn.style.pointerEvents = health <= 0 ? 'none' : 'auto';
+
+  // Улучшения и ремонт
+  upgrade1Btn.disabled = score < 25;
+  upgrade2Btn.disabled = score < 120;
+  upgrade3Btn.disabled = score < 500;
+
+  fixClutchBtn.disabled = score < 250;
+  addCoolantBtn.disabled = score < 400;
+  tuneJetsBtn.disabled = score < 600;
+}
   saveProgress();
 }
 
