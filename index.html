@@ -2,15 +2,17 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Москвич 412 Кликер</title>
-  <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #fff;
       margin: 20px;
       text-align: center;
+      position: relative;
+      min-height: 100vh;
+      padding-bottom: 80px; /* место для уведомлений */
     }
     .car-img {
       width: 300px;
@@ -37,6 +39,33 @@
       opacity: 0.5;
       cursor: not-allowed;
     }
+
+    /* Уведомления */
+    #notification-container {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 300px;
+      z-index: 1000;
+    }
+    .notification {
+      background: rgba(30, 30, 30, 0.85);
+      color: #fff;
+      padding: 12px 20px;
+      margin-top: 10px;
+      border-radius: 8px;
+      font-size: 16px;
+      opacity: 0;
+      animation: fadeinout 3s forwards;
+      pointer-events: none;
+      user-select: none;
+    }
+    @keyframes fadeinout {
+      0% { opacity: 0; transform: translateY(20px); }
+      10%, 90% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-20px); }
+    }
   </style>
 </head>
 <body>
@@ -47,7 +76,6 @@
     <p><span class="retro-label">Скорость:</span> <span id="perSecond">0</span> км/ч</p>
   </div>
 
-  <!-- Вернул картинку как у тебя -->
   <img src="images/moskvich.png" class="car-img" id="clickBtn" alt="Москвич 412" />
 
   <div class="tabs">
@@ -65,9 +93,9 @@
 
   <div id="repair" class="tab-content">
     <h3>🔧 Ремонт:</h3>
-    <button class="repair-btn" id="fixClutch">Починить сцепление (100 км)</button>
-    <button class="repair-btn" id="addCoolant">Залить тосол (150 км)</button>
-    <button class="repair-btn" id="tuneJets">Подкрутить жиклёры (200 км)</button>
+    <button class="repair-btn" id="fixClutch" disabled>Починить сцепление (100 км)</button>
+    <button class="repair-btn" id="addCoolant" disabled>Залить тосол (150 км)</button>
+    <button class="repair-btn" id="tuneJets" disabled>Подкрутить жиклёры (200 км)</button>
   </div>
 
   <div id="leaders" class="tab-content">
@@ -79,11 +107,17 @@
     </ul>
   </div>
 
+  <!-- Контейнер для уведомлений -->
+  <div id="notification-container"></div>
+
   <script>
     let score = parseInt(localStorage.getItem('score')) || 0;
     let perClick = parseInt(localStorage.getItem('perClick')) || 1;
     let perSecond = parseInt(localStorage.getItem('perSecond')) || 0;
-    let lastWearCheck = parseInt(localStorage.getItem('lastWearCheck')) || 0;
+
+    let lastClutchFix = parseInt(localStorage.getItem('lastClutchFix')) || 0;
+    let lastCoolantFill = parseInt(localStorage.getItem('lastCoolantFill')) || 0;
+    let lastJetsTune = parseInt(localStorage.getItem('lastJetsTune')) || 0;
 
     const scoreElement = document.getElementById('score');
     const perSecondElement = document.getElementById('perSecond');
@@ -97,38 +131,48 @@
     const addCoolantBtn = document.getElementById('addCoolant');
     const tuneJetsBtn = document.getElementById('tuneJets');
 
+    const clutchWearThreshold = 1000;
+    const coolantWearThreshold = 1500;
+    const jetsWearThreshold = 2000;
+
+    function showNotification(message) {
+      const container = document.getElementById('notification-container');
+      const notification = document.createElement('div');
+      notification.className = 'notification';
+      notification.textContent = message;
+      container.appendChild(notification);
+
+      // Автоматически удалить через 3 сек (совпадает с анимацией)
+      setTimeout(() => {
+        container.removeChild(notification);
+      }, 3000);
+    }
+
     function updateUI() {
       scoreElement.textContent = Math.floor(score);
       perSecondElement.textContent = perSecond;
+
       upgrade1Btn.disabled = score < 10;
       upgrade2Btn.disabled = score < 50;
       upgrade3Btn.disabled = score < 200;
-      fixClutchBtn.disabled = score < 100;
-      addCoolantBtn.disabled = score < 150;
-      tuneJetsBtn.disabled = score < 200;
+
+      fixClutchBtn.disabled = (score - lastClutchFix) < clutchWearThreshold || score < 100;
+      addCoolantBtn.disabled = (score - lastCoolantFill) < coolantWearThreshold || score < 150;
+      tuneJetsBtn.disabled = (score - lastJetsTune) < jetsWearThreshold || score < 200;
     }
 
     function saveProgress() {
       localStorage.setItem('score', score);
       localStorage.setItem('perClick', perClick);
       localStorage.setItem('perSecond', perSecond);
-      localStorage.setItem('lastWearCheck', lastWearCheck);
-    }
 
-    function checkWear() {
-      const wearThreshold = Math.min(500 + Math.floor(score / 1000) * 100, 3000); // увеличивается с пробегом, до 3к км
-      if (score - lastWearCheck >= wearThreshold) {
-        lastWearCheck = score;
-        perClick = Math.max(1, perClick - 1);
-        perSecond = Math.max(0, perSecond - 2);
-        alert("⚙️ Износ сцепления! Скорость и клики снижены.");
-        updateUI();
-      }
+      localStorage.setItem('lastClutchFix', lastClutchFix);
+      localStorage.setItem('lastCoolantFill', lastCoolantFill);
+      localStorage.setItem('lastJetsTune', lastJetsTune);
     }
 
     function addScore() {
       score += perClick;
-      checkWear();
       updateUI();
       saveProgress();
     }
@@ -141,6 +185,7 @@
         perSecond += 5;
         updateUI();
         saveProgress();
+        showNotification('⚙️ Карбюратор установлен!');
       }
     });
 
@@ -150,6 +195,7 @@
         perClick += 2;
         updateUI();
         saveProgress();
+        showNotification('⚙️ Турбонаддув установлен!');
       }
     });
 
@@ -159,6 +205,7 @@
         perSecond += 20;
         updateUI();
         saveProgress();
+        showNotification('⚙️ Спойлер установлен!');
       }
     });
 
@@ -166,9 +213,10 @@
       if (score >= 100) {
         score -= 100;
         perSecond += 2;
-        alert("✅ Сцепление отрегулировано!");
+        lastClutchFix = score;
         updateUI();
         saveProgress();
+        showNotification('✅ Сцепление отрегулировано!');
       }
     });
 
@@ -176,38 +224,11 @@
       if (score >= 150) {
         score -= 150;
         perClick += 1;
-        alert("✅ Тосол залит!");
+        lastCoolantFill = score;
         updateUI();
         saveProgress();
+        showNotification('✅ Тосол залит!');
       }
     });
 
-    tuneJetsBtn.addEventListener('click', () => {
-      if (score >= 200) {
-        score -= 200;
-        perClick += 1;
-        perSecond += 1;
-        alert("✅ Жиклёры подкручены!");
-        updateUI();
-        saveProgress();
-      }
-    });
-
-    setInterval(() => {
-      score += perSecond;
-      checkWear();
-      updateUI();
-      saveProgress();
-    }, 1000);
-
-    function showTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-      });
-      document.getElementById(tabId).classList.add('active');
-    }
-
-    updateUI();
-  </script>
-</body>
-</html>
+    tuneJetsBtn.addEventListener('click', ()
