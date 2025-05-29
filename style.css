@@ -1,0 +1,67 @@
+body {
+    font-family: 'Trebuchet MS', sans-serif;
+    text-align: center;
+    background-color: #f0e6d2;
+    margin: 0;
+    padding: 10px;
+    color: #333;
+    background-image: url('images/background.png');
+    background-size: cover;
+}
+
+.container {
+    max-width: 400px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px solid #a52a2a;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    color: #a52a2a;
+    text-shadow: 1px 1px 2px #ccc;
+    font-size: 24px;
+}
+
+.clicker-btn {
+    background-color: #a52a2a;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.1s;
+    margin: 20px 0;
+    font-weight: bold;
+}
+
+.car-img {
+    width: 200px;
+    cursor: pointer;
+    transition: transform 0.1s;
+    margin: 10px 0;
+}
+
+.stats {
+    margin-top: 15px;
+    font-size: 16px;
+    background: #fff3cd;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px dashed #a52a2a;
+}
+
+.upgrade-btn {
+    background-color: #4682b4;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 5px 0;
+    width: 100%;
+    font-size: 14px;
+}

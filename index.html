@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Москвич 412 Кликер | VK Mini App</title>
+    <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🚗 Москвич 412 Кликер 🚗</h1>
+        <div class="stats">
+            <p><span class="retro-label">Пробег:</span> <span id="score">0</span> км</p>
+            <p><span class="retro-label">Скорость:</span> <span id="perSecond">0</span> км/ч</p>
+        </div>
+
+        <img src="images/moskvich.png" class="car-img" id="clickBtn" alt="Москвич 412">
+        <button class="clicker-btn" id="manualClickBtn">ТУНДУ-МОСКВИЧ!</button>
+
+        <div class="upgrades">
+            <h3>⚙️ Тюнинг:</h3>
+            <button class="upgrade-btn" id="upgrade1">Карбюратор (+5 км/ч) - 10 км</button>
+            <button class="upgrade-btn" id="upgrade2">Турбонаддув (+2 км за клик) - 50 км</button>
+            <button class="upgrade-btn" id="upgrade3">Спойлер (+20 км/ч) - 200 км</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
