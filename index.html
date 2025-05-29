@@ -2,10 +2,109 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Москвич 412 Кликер</title>
   <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0; padding: 20px;
+      text-align: center;
+    }
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      margin-bottom: 10px;
+      font-weight: 700;
+      font-size: 2em;
+      color: #333;
+      animation: fadeIn 2s ease forwards;
+      opacity: 0;
+    }
+    @keyframes fadeIn {
+      to {opacity: 1;}
+    }
+    .stats p {
+      margin: 5px 0;
+      font-size: 1.1em;
+    }
+    .car-img {
+      width: 150px;
+      cursor: pointer;
+      margin: 15px 0;
+    }
+    .tabs {
+      margin: 15px 0;
+    }
+    .tab-btn {
+      background: #ddd;
+      border: none;
+      padding: 10px 15px;
+      margin: 0 5px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background 0.3s;
+    }
+    .tab-btn:hover {
+      background: #bbb;
+    }
+    .tab-content {
+      display: none;
+      margin-top: 10px;
+      text-align: left;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    button.upgrade-btn, button.repair-btn {
+      display: block;
+      width: 100%;
+      margin: 5px 0;
+      padding: 10px;
+      font-size: 1em;
+      border-radius: 6px;
+      border: 1px solid #888;
+      cursor: pointer;
+      background: #eee;
+      transition: background 0.3s;
+    }
+    button.upgrade-btn:disabled, button.repair-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    button.upgrade-btn:hover:not(:disabled), button.repair-btn:hover:not(:disabled) {
+      background: #ddd;
+    }
+    #messageBox {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 1em;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s;
+      z-index: 1000;
+      max-width: 90%;
+      text-align: center;
+    }
+    #messageBox.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -31,14 +130,14 @@
       <button class="upgrade-btn" id="upgrade3">Спойлер (+20 км/ч) - 200 км</button>
     </div>
 
-    <div class="tab-content" id="repair" style="display:none;">
+    <div class="tab-content" id="repair">
       <h3>🔧 Ремонт:</h3>
       <button class="repair-btn" id="fixClutch">Починить сцепление (100 км)</button>
       <button class="repair-btn" id="addCoolant">Залить тосол (150 км)</button>
       <button class="repair-btn" id="tuneJets">Подкрутить жиклёры (200 км)</button>
     </div>
 
-    <div class="tab-content" id="leaders" style="display:none;">
+    <div class="tab-content" id="leaders">
       <h3>🏁 Лучшие водители:</h3>
       <ul id="leaderList">
         <li>🏅 Легенда капота — 15000 км</li>
@@ -48,6 +147,165 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <div id="messageBox"></div>
+
+  <script>
+    vkBridge.send('VKWebAppInit');
+
+    let score = parseInt(localStorage.getItem('score')) || 0;
+    let perClick = parseInt(localStorage.getItem('perClick')) || 1;
+    let perSecond = parseInt(localStorage.getItem('perSecond')) || 0;
+    let lastWearCheck = parseInt(localStorage.getItem('lastWearCheck')) || 0;
+
+    const scoreElement = document.getElementById('score');
+    const perSecondElement = document.getElementById('perSecond');
+    const clickBtn = document.getElementById('clickBtn');
+
+    const upgrade1Btn = document.getElementById('upgrade1');
+    const upgrade2Btn = document.getElementById('upgrade2');
+    const upgrade3Btn = document.getElementById('upgrade3');
+
+    const fixClutchBtn = document.getElementById('fixClutch');
+    const addCoolantBtn = document.getElementById('addCoolant');
+    const tuneJetsBtn = document.getElementById('tuneJets');
+
+    const messageBox = document.getElementById('messageBox');
+
+    function showMessage(text) {
+      messageBox.textContent = text;
+      messageBox.classList.add('show');
+      clearTimeout(messageBox.timeout);
+      messageBox.timeout = setTimeout(() => {
+        messageBox.classList.remove('show');
+      }, 2000);
+    }
+
+    function updateUI() {
+      scoreElement.textContent = Math.floor(score);
+      perSecondElement.textContent = perSecond;
+      upgrade1Btn.disabled = score < 10;
+      upgrade2Btn.disabled = score < 50;
+      upgrade3Btn.disabled = score < 200;
+
+      fixClutchBtn.disabled = score < 100;
+      addCoolantBtn.disabled = score < 150;
+      tuneJetsBtn.disabled = score < 200;
+    }
+
+    function saveProgress() {
+      localStorage.setItem('score', score);
+      localStorage.setItem('perClick', perClick);
+      localStorage.setItem('perSecond', perSecond);
+      localStorage.setItem('lastWearCheck', lastWearCheck);
+    }
+
+    function checkWear() {
+      if (score - lastWearCheck >= 500) {
+        lastWearCheck = score;
+        perClick = Math.max(1, perClick - 1);
+        perSecond = Math.max(0, perSecond - 2);
+        showMessage("⚙️ Износ сцепления! Скорость и клики снижены.");
+        updateUI();
+        saveProgress();
+      }
+    }
+
+    function addScore() {
+      score += perClick;
+      checkWear();
+      updateUI();
+      saveProgress();
+    }
+
+    clickBtn.addEventListener('click', addScore);
+
+    upgrade1Btn.addEventListener('click', () => {
+      if (score >= 10) {
+        score -= 10;
+        perSecond += 5;
+        updateUI();
+        saveProgress();
+      } else {
+        showMessage('Недостаточно пробега!');
+      }
+    });
+
+    upgrade2Btn.addEventListener('click', () => {
+      if (score >= 50) {
+        score -= 50;
+        perClick += 2;
+        updateUI();
+        saveProgress();
+      } else {
+        showMessage('Недостаточно пробега!');
+      }
+    });
+
+    upgrade3Btn.addEventListener('click', () => {
+      if (score >= 200) {
+        score -= 200;
+        perSecond += 20;
+        updateUI();
+        saveProgress();
+      } else {
+        showMessage('Недостаточно пробега!');
+      }
+    });
+
+    fixClutchBtn.addEventListener('click', () => {
+      if (score >= 100) {
+        score -= 100;
+        perSecond += 2;
+        showMessage("✅ Сцепление отрегулировано!");
+        updateUI();
+        saveProgress();
+      } else {
+        showMessage('Недостаточно пробега!');
+      }
+    });
+
+    addCoolantBtn.addEventListener('click', () => {
+      if (score >= 150) {
+        score -= 150;
+        perClick += 1;
+        showMessage("✅ Тосол залит!");
+        updateUI();
+        saveProgress();
+      } else {
+        showMessage('Недостаточно пробега!');
+      }
+    });
+
+    tuneJetsBtn.addEventListener('click', () => {
+      if (score >= 200) {
+        score -= 200;
+        perClick += 1;
+        perSecond += 1;
+        showMessage("✅ Жиклёры подкручены!");
+        updateUI();
+        saveProgress();
+      } else {
+        showMessage('Недостаточно пробега!');
+      }
+    });
+
+    setInterval(() => {
+      score += perSecond;
+      checkWear();
+      updateUI();
+      saveProgress();
+    }, 1000);
+
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    // Инициализация - показать вкладку Тюнинг
+    showTab('tuning');
+    updateUI();
+  </script>
 </body>
 </html>
