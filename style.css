@@ -128,3 +128,16 @@ button:disabled {
   opacity: 1;
   pointer-events: auto;
 }
+
+/* Стили для полосы здоровья */
+#healthDisplay {
+  margin-top: 18px;
+  font-weight: bold;
+  color: #006400;
+}
+#healthBar {
+  height: 100%;
+  width: 100%;
+  border-radius: 10px;
+  transition: width 0.4s ease;
+}
