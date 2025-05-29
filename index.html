@@ -131,7 +131,7 @@
     }
 
     function checkWear() {
-      const wearThreshold = 1000 + Math.floor(score / 10); // Увеличиваем порог износа
+      const wearThreshold = 1000 + Math.floor(score / 10);
       if (score - lastWearCheck >= wearThreshold) {
         lastWearCheck = score;
         perClick = Math.max(1, perClick - 1);
@@ -261,8 +261,4 @@
     }, 1000);
 
     updateUI();
-    updateLeaderboard();
-    showTab('tuning');
-  </script>
-</body>
-</html>
+    update 
