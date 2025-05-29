@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Москвич 412 Кликер - Улучшенный дизайн</title>
-<script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+<title>Москвич 412 Кликер - Сложный режим</title>
 <style>
   /* Фон с плавной сменой дня и ночи */
   @keyframes dayNight {
@@ -59,6 +58,49 @@
     font-size: 1.3rem;
     color: #b12704;
     user-select: text;
+  }
+
+  /* Стили для прогресс-бара монет */
+  .progress-container {
+    width: 100%;
+    height: 20px;
+    background: #e0e0e0;
+    border-radius: 10px;
+    margin-top: 8px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+  }
+
+  .progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #ffd700, #ffcc00);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+    animation: pulse 2s infinite;
+  }
+
+  .progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #333;
+    text-shadow: 0 0 2px white;
+  }
+
+  @keyframes pulse {
+    0% { opacity: 0.8; }
+    50% { opacity: 1; }
+    100% { opacity: 0.8; }
+  }
+
+  .progress-bar.full {
+    animation: pulse 0.5s infinite;
+    background: linear-gradient(90deg, #ffd700, #ff9900);
   }
 
   #clickBtn {
@@ -197,6 +239,10 @@
 
     <div id="coinsDisplay" aria-live="polite" aria-atomic="true">
       💰 Монеты: <span id="coins">0</span>
+      <div class="progress-container">
+        <div class="progress-bar" id="coinProgress"></div>
+        <span class="progress-text" id="progressText">0/100</span>
+      </div>
     </div>
 
     <img src="https://raw.githubusercontent.com/prokazin/Mosk/main/images/moskvich.png" alt="Москвич 412" id="clickBtn" tabindex="0" aria-label="Кликать для увеличения пробега" />
@@ -209,16 +255,16 @@
 
     <section class="tab-content active" id="tuning" role="tabpanel" tabindex="0" aria-labelledby="tuning-tab">
       <h3>⚙️ Тюнинг:</h3>
-      <button class="upgrade-btn" id="upgrade1">Карбюратор (+8 км/ч) - 10 км</button>
-      <button class="upgrade-btn" id="upgrade2">Турбонаддув (+3 км за клик) - 50 км</button>
-      <button class="upgrade-btn" id="upgrade3">Спойлер (+30 км/ч) - 200 км</button>
+      <button class="upgrade-btn" id="upgrade1">Карбюратор (+4 км/ч) - 25 км</button>
+      <button class="upgrade-btn" id="upgrade2">Турбонаддув (+1 км за клик) - 120 км</button>
+      <button class="upgrade-btn" id="upgrade3">Спойлер (+15 км/ч) - 500 км</button>
     </section>
 
     <section class="tab-content" id="repair" role="tabpanel" tabindex="0" aria-labelledby="repair-tab">
       <h3>🔧 Ремонт:</h3>
-      <button class="repair-btn" id="fixClutch">Починить сцепление (100 км)</button>
-      <button class="repair-btn" id="addCoolant">Залить тосол (150 км)</button>
-      <button class="repair-btn" id="tuneJets">Подкрутить жиклёры (200 км)</button>
+      <button class="repair-btn" id="fixClutch">Починить сцепление (250 км)</button>
+      <button class="repair-btn" id="addCoolant">Залить тосол (400 км)</button>
+      <button class="repair-btn" id="tuneJets">Подкрутить жиклёры (600 км)</button>
     </section>
 
     <section class="tab-content" id="leaders" role="tabpanel" tabindex="0" aria-labelledby="leaders-tab">
@@ -234,176 +280,197 @@
   <div id="notification" role="alert" aria-live="assertive"></div>
 
   <script>
-    vkBridge.send('VKWebAppInit');
+    // Упрощённая версия без сложных вычислений
+    try {
+      // Удаляем VK Bridge для упрощения
+      // vkBridge.send('VKWebAppInit');
 
-    let score = parseInt(localStorage.getItem('score')) || 0;
-    let perClick = parseInt(localStorage.getItem('perClick')) || 2;
-    let perSecond = parseInt(localStorage.getItem('perSecond')) || 0;
+      // Баланс игры
+      const GAME_BALANCE = {
+        basePerClick: 1,          // Базовый пробег за клик
+        upgradeCostMultiplier: 2, // Множитель стоимости улучшений
+        coinsInterval: 150        // Кликов за монету
+      };
 
-    let coins = parseInt(localStorage.getItem('coins')) || 0;
-    let clicksCount = parseInt(localStorage.getItem('clicksCount')) || 0;
+      // Переменные игры
+      let score = parseInt(localStorage.getItem('score')) || 0;
+      let perClick = parseInt(localStorage.getItem('perClick')) || GAME_BALANCE.basePerClick;
+      let perSecond = parseInt(localStorage.getItem('perSecond')) || 0;
+      let coins = parseInt(localStorage.getItem('coins')) || 0;
+      let clicksCount = parseInt(localStorage.getItem('clicksCount')) || 0;
 
-    const scoreElement = document.getElementById('score');
-    const perSecondElement = document.getElementById('perSecond');
-    const clickBtn = document.getElementById('clickBtn');
+      // Элементы интерфейса
+      const scoreElement = document.getElementById('score');
+      const perSecondElement = document.getElementById('perSecond');
+      const clickBtn = document.getElementById('clickBtn');
+      const coinProgress = document.getElementById('coinProgress');
+      const progressText = document.getElementById('progressText');
+      const upgrade1Btn = document.getElementById('upgrade1');
+      const upgrade2Btn = document.getElementById('upgrade2');
+      const upgrade3Btn = document.getElementById('upgrade3');
+      const fixClutchBtn = document.getElementById('fixClutch');
+      const addCoolantBtn = document.getElementById('addCoolant');
+      const tuneJetsBtn = document.getElementById('tuneJets');
+      const coinsDisplay = document.getElementById('coins');
+      const notification = document.getElementById('notification');
+      let notificationTimeout;
 
-    const upgrade1Btn = document.getElementById('upgrade1');
-    const upgrade2Btn = document.getElementById('upgrade2');
-    const upgrade3Btn = document.getElementById('upgrade3');
-
-    const fixClutchBtn = document.getElementById('fixClutch');
-    const addCoolantBtn = document.getElementById('addCoolant');
-    const tuneJetsBtn = document.getElementById('tuneJets');
-
-    const coinsDisplay = document.getElementById('coins');
-    const notification = document.getElementById('notification');
-    let notificationTimeout;
-
-    function showNotification(text) {
-      clearTimeout(notificationTimeout);
-      notification.textContent = text;
-      notification.classList.add('show');
-      notification.setAttribute('aria-hidden', 'false');
-      notificationTimeout = setTimeout(() => {
-        notification.classList.remove('show');
-        notification.setAttribute('aria-hidden', 'true');
-      }, 3500);
-    }
-
-    function updateUI() {
-      scoreElement.textContent = Math.floor(score);
-      perSecondElement.textContent = perSecond.toFixed(1);
-      coinsDisplay.textContent = coins;
-
-      upgrade1Btn.disabled = score < 10;
-      upgrade2Btn.disabled = score < 50;
-      upgrade3Btn.disabled = score < 200;
-
-      fixClutchBtn.disabled = score < 100;
-      addCoolantBtn.disabled = score < 150;
-      tuneJetsBtn.disabled = score < 200;
-    }
-
-    function saveGame() {
-      localStorage.setItem('score', score);
-      localStorage.setItem('perClick', perClick);
-      localStorage.setItem('perSecond', perSecond);
-      localStorage.setItem('coins', coins);
-      localStorage.setItem('clicksCount', clicksCount);
-    }
-
-    function clickHandler() {
-      score += perClick;
-      clicksCount++;
-      updateUI();
-      saveGame();
-
-      clickBtn.classList.remove('jump');
-      void clickBtn.offsetWidth; // триггер перезапуска анимации
-      clickBtn.classList.add('jump');
-
-      if (clicksCount % 100 === 0) {
-        coins++;
-        showNotification('🎉 Получена бонусная монета!');
-        saveGame();
+      // Уведомления
+      function showNotification(text) {
+        clearTimeout(notificationTimeout);
+        notification.textContent = text;
+        notification.classList.add('show');
+        notificationTimeout = setTimeout(() => {
+          notification.classList.remove('show');
+        }, 3500);
       }
-    }
 
-    function upgrade1() {
-      if (score >= 10) {
-        score -= 10;
-        perSecond += 8;
+      // Обновление интерфейса
+      function updateUI() {
+        scoreElement.textContent = Math.floor(score);
+        perSecondElement.textContent = perSecond;
+        coinsDisplay.textContent = coins;
+        
+        // Прогресс монет
+        const progress = (clicksCount % GAME_BALANCE.coinsInterval) / GAME_BALANCE.coinsInterval * 100;
+        const remaining = GAME_BALANCE.coinsInterval - (clicksCount % GAME_BALANCE.coinsInterval);
+        coinProgress.style.width = `${progress}%`;
+        progressText.textContent = `${GAME_BALANCE.coinsInterval - remaining}/${GAME_BALANCE.coinsInterval}`;
+        
+        // Кнопки улучшений
+        upgrade1Btn.disabled = score < 25;
+        upgrade2Btn.disabled = score < 120;
+        upgrade3Btn.disabled = score < 500;
+        
+        // Кнопки ремонта
+        fixClutchBtn.disabled = score < 250;
+        addCoolantBtn.disabled = score < 400;
+        tuneJetsBtn.disabled = score < 600;
+      }
+
+      // Сохранение игры
+      function saveGame() {
+        localStorage.setItem('score', score);
+        localStorage.setItem('perClick', perClick);
+        localStorage.setItem('perSecond', perSecond);
+        localStorage.setItem('coins', coins);
+        localStorage.setItem('clicksCount', clicksCount);
+      }
+
+      // Обработчик клика
+      function clickHandler() {
+        score += perClick;
+        clicksCount++;
+        
+        // Проверка на получение монеты
+        if (clicksCount % GAME_BALANCE.coinsInterval === 0) {
+          coins++;
+          showNotification('🎉 Получена бонусная монета!');
+        }
+        
         updateUI();
         saveGame();
-        showNotification('⚙️ Карбюратор улучшен!');
+        
+        // Анимация
+        clickBtn.classList.remove('jump');
+        void clickBtn.offsetWidth;
+        clickBtn.classList.add('jump');
       }
-    }
-    function upgrade2() {
-      if (score >= 50) {
-        score -= 50;
-        perClick += 3;
-        updateUI();
-        saveGame();
-        showNotification('🚀 Турбонаддув установлен!');
+
+      // Улучшения
+      function upgrade1() {
+        if (score >= 25) {
+          score -= 25;
+          perSecond += 4;
+          showNotification('⚙️ Карбюратор улучшен! +4 км/ч');
+          updateUI();
+          saveGame();
+        }
       }
-    }
-    function upgrade3() {
-      if (score >= 200) {
-        score -= 200;
-        perSecond += 30;
-        updateUI();
-        saveGame();
-        showNotification('🔥 Спойлер установлен!');
+      
+      function upgrade2() {
+        if (score >= 120) {
+          score -= 120;
+          perClick += 1;
+          showNotification('🚀 Турбонаддув установлен! +1 км/клик');
+          updateUI();
+          saveGame();
+        }
       }
-    }
-
-    function fixClutch() {
-      if (score >= 100) {
-        score -= 100;
-        showNotification('🔧 Сцепление починено!');
-        updateUI();
-        saveGame();
+      
+      function upgrade3() {
+        if (score >= 500) {
+          score -= 500;
+          perSecond += 15;
+          showNotification('🔥 Спойлер установлен! +15 км/ч');
+          updateUI();
+          saveGame();
+        }
       }
-    }
-    function addCoolant() {
-      if (score >= 150) {
-        score -= 150;
-        showNotification('💧 Тосол залит!');
-        updateUI();
-        saveGame();
+
+      // Ремонт
+      function fixClutch() {
+        if (score >= 250) {
+          score -= 250;
+          showNotification('🔧 Сцепление починено!');
+          updateUI();
+          saveGame();
+        }
       }
-    }
-    function tuneJets() {
-      if (score >= 200) {
-        score -= 200;
-        showNotification('⚙️ Жиклёры подкручены!');
-        updateUI();
-        saveGame();
+      
+      function addCoolant() {
+        if (score >= 400) {
+          score -= 400;
+          showNotification('💧 Тосол залит!');
+          updateUI();
+          saveGame();
+        }
       }
-    }
+      
+      function tuneJets() {
+        if (score >= 600) {
+          score -= 600;
+          showNotification('⚙️ Жиклёры подкручены!');
+          updateUI();
+          saveGame();
+        }
+      }
 
-    clickBtn.addEventListener('click', clickHandler);
+      // Обработчики событий
+      clickBtn.addEventListener('click', clickHandler);
+      upgrade1Btn.addEventListener('click', upgrade1);
+      upgrade2Btn.addEventListener('click', upgrade2);
+      upgrade3Btn.addEventListener('click', upgrade3);
+      fixClutchBtn.addEventListener('click', fixClutch);
+      addCoolantBtn.addEventListener('click', addCoolant);
+      tuneJetsBtn.addEventListener('click', tuneJets);
 
-    upgrade1Btn.addEventListener('click', upgrade1);
-    upgrade2Btn.addEventListener('click', upgrade2);
-    upgrade3Btn.addEventListener('click', upgrade3);
-
-    fixClutchBtn.addEventListener('click', fixClutch);
-    addCoolantBtn.addEventListener('click', addCoolant);
-    tuneJetsBtn.addEventListener('click', tuneJets);
-
-    // Таб переключения
-    const tabButtons = document.querySelectorAll('.tab-btn');
-    const tabContents = document.querySelectorAll('.tab-content');
-
-    tabButtons.forEach((btn, idx) => {
-      btn.addEventListener('click', () => {
-        tabButtons.forEach(b => {
-          b.classList.remove('active');
-          b.setAttribute('aria-selected', 'false');
-          b.tabIndex = -1;
+      // Переключение вкладок
+      const tabButtons = document.querySelectorAll('.tab-btn');
+      const tabContents = document.querySelectorAll('.tab-content');
+      tabButtons.forEach((btn, idx) => {
+        btn.addEventListener('click', () => {
+          tabButtons.forEach(b => b.classList.remove('active'));
+          tabContents.forEach(tc => tc.classList.remove('active'));
+          btn.classList.add('active');
+          tabContents[idx].classList.add('active');
         });
-        tabContents.forEach(tc => tc.classList.remove('active'));
-
-        btn.classList.add('active');
-        btn.setAttribute('aria-selected', 'true');
-        btn.tabIndex = 0;
-        tabContents[idx].classList.add('active');
-        tabContents[idx].focus();
       });
-    });
 
-    // Включаем первую вкладку по умолчанию
-    tabButtons[0].click();
+      // Автоматическое увеличение пробега
+      setInterval(() => {
+        score += perSecond;
+        updateUI();
+        saveGame();
+      }, 1000);
 
-    // Автоматическое увеличение score на perSecond каждую секунду
-    setInterval(() => {
-      score += perSecond;
+      // Первоначальная загрузка
       updateUI();
-      saveGame();
-    }, 1000);
 
-    updateUI();
+    } catch (e) {
+      console.error("Ошибка в игре:", e);
+      alert("Произошла ошибка: " + e.message);
+    }
   </script>
 </body>
 </html>
