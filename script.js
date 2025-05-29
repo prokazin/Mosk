@@ -213,6 +213,33 @@ const healthText = document.getElementById('healthText');
   coinProgress.style.width = `${progress}%`;
   progressText.textContent = `${GAME_BALANCE.coinsInterval - remaining}/${GAME_BALANCE.coinsInterval}`;
 
+    function clickHandler() {
+  if (health <= 0) return;
+
+  score += perClick;
+  clicksCount++;
+  distanceSinceLastHealthDrop += perClick;
+
+  // Снижение здоровья каждые 100 км
+  if (distanceSinceLastHealthDrop >= 100) {
+    const drops = Math.floor(distanceSinceLastHealthDrop / 100);
+    health = Math.max(0, health - drops);
+    distanceSinceLastHealthDrop %= 100;
+  }
+
+  if (clicksCount % GAME_BALANCE.coinsInterval === 0) {
+    coins++;
+    showNotification('🎉 Получена бонусная монета!');
+  }
+
+  updateUI();
+  saveGame();
+
+  clickBtn.classList.remove('jump');
+  void clickBtn.offsetWidth;
+  clickBtn.classList.add('jump');
+}
+    
   // Прогресс здоровья
   healthValue.textContent = `${Math.floor(health)}%`;
   healthBar.style.width = `${health}%`;
