@@ -1,3 +1,35 @@
+/* Анимация плавного появления с увеличением и свечением */
+@keyframes fadeInScaleGlow {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+    color: #c0392b;
+    text-shadow: none;
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+    color: #e74c3c;
+    text-shadow: 0 0 15px #c0392b;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    color: #c0392b;
+    text-shadow: 0 0 5px #e74c3c;
+  }
+}
+
+/* Заголовок с анимацией */
+h1 {
+  font-size: 36px;
+  font-weight: 900;
+  animation: fadeInScaleGlow 2.5s ease forwards;
+  user-select: none;
+  margin-bottom: 20px;
+}
+
+/* Основные стили страницы */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #f4f4f4;
@@ -16,11 +48,7 @@ body {
   box-shadow: 0 0 12px rgba(0,0,0,0.1);
 }
 
-h1 {
-  margin-bottom: 10px;
-  font-size: 24px;
-}
-
+/* Статистика пробега и скорости */
 .stats p {
   margin: 5px 0;
   font-size: 16px;
@@ -31,6 +59,7 @@ h1 {
   color: #c0392b;
 }
 
+/* Картинка Москвича */
 .car-img {
   width: 100%;
   max-width: 300px;
@@ -43,6 +72,7 @@ h1 {
   transform: scale(0.98);
 }
 
+/* Вкладки */
 .tabs {
   margin: 20px 0 10px;
 }
@@ -56,16 +86,20 @@ h1 {
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
+  transition: background 0.3s;
 }
 
-.tab-btn:hover {
+.tab-btn:hover, .tab-btn.active {
   background: #3498db;
 }
 
+/* Контент вкладок */
 .tab-content {
   margin-top: 10px;
+  display: none;
 }
 
+/* Кнопки тюнинга и ремонта */
 .upgrade-btn, .repair-btn {
   display: block;
   width: 100%;
@@ -89,6 +123,7 @@ h1 {
   cursor: not-allowed;
 }
 
+/* Список лидеров */
 ul#leaderList {
   list-style: none;
   padding: 0;
@@ -101,4 +136,6 @@ ul#leaderList {
   padding: 10px;
   border-radius: 6px;
   font-weight: bold;
+  text-align: left;
+  font-family: monospace;
 }
