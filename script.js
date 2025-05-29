@@ -239,6 +239,20 @@ const healthText = document.getElementById('healthText');
   void clickBtn.offsetWidth;
   clickBtn.classList.add('jump');
 }
+
+    setInterval(() => {
+  score += perSecond;
+  distanceSinceLastHealthDrop += perSecond;
+
+  if (distanceSinceLastHealthDrop >= 100) {
+    const drops = Math.floor(distanceSinceLastHealthDrop / 100);
+    health = Math.max(0, health - drops);
+    distanceSinceLastHealthDrop %= 100;
+  }
+
+  updateUI();
+  saveGame();
+}, 1000);
     
   // Прогресс здоровья
   healthValue.textContent = `${Math.floor(health)}%`;
@@ -250,6 +264,44 @@ const healthText = document.getElementById('healthText');
       ? 'linear-gradient(90deg, #ffcc00, #ffaa00)' 
       : 'linear-gradient(90deg, #ff4444, #cc0000)');
 
+    function fixClutch() {
+  if (score >= 250) {
+    score -= 250;
+    health = 100;
+    showNotification('🔧 Сцепление починено! Здоровье восстановлено.');
+    updateUI();
+    saveGame();
+  }
+}
+function addCoolant() {
+  if (score >= 400) {
+    score -= 400;
+    health = 100;
+    showNotification('💧 Тосол залит! Здоровье восстановлено.');
+    updateUI();
+    saveGame();
+  }
+}
+function tuneJets() {
+  if (score >= 600) {
+    score -= 600;
+    health = 100;
+    showNotification('⚙️ Жиклёры подкручены! Здоровье восстановлено.');
+    updateUI();
+    saveGame();
+  }
+}
+
+    function saveGame() {
+  localStorage.setItem('score', score);
+  localStorage.setItem('perClick', perClick);
+  localStorage.setItem('perSecond', perSecond);
+  localStorage.setItem('coins', coins);
+  localStorage.setItem('clicksCount', clicksCount);
+  localStorage.setItem('health', health);
+  localStorage.setItem('distanceSinceLastHealthDrop', distanceSinceLastHealthDrop);
+}
+    
   // Блокировать кнопку при 0% здоровья
   clickBtn.style.opacity = health <= 0 ? 0.5 : 1;
   clickBtn.style.pointerEvents = health <= 0 ? 'none' : 'auto';
