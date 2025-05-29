@@ -3,144 +3,117 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>МОСКВИЧ</title>
+<title>Москвич 412 Кликер — Хардкор</title>
 <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
 <style>
-  /* Фон с плавной сменой дня и ночи */
-  @keyframes dayNight {
-    0%, 100% { background: linear-gradient(to bottom, #87CEEB 0%, #f0f8ff 100%); }
-    50% { background: linear-gradient(to bottom, #0d1b2a 0%, #1b263b 100%); }
-  }
+  /* Фон с плавной сменой день/ночь */
   body, html {
-    margin: 0; padding: 0; height: 100vh; overflow-x: hidden;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    animation: dayNight 60s ease-in-out infinite;
-    transition: background 0.5s ease;
-    color: #222;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(to bottom, #87CEEB 0%, #f0f8ff 100%);
+    margin: 0; padding: 0; font-family: Arial, sans-serif;
+    height: 100vh; overflow-x: hidden;
+    background: linear-gradient(to bottom, #87ceeb, #f0e68c);
+    animation: dayNight 120s linear infinite alternate;
+  }
+  @keyframes dayNight {
+    0%   { background: linear-gradient(to bottom, #87ceeb, #f0e68c); } /* день */
+    50%  { background: linear-gradient(to bottom, #2c3e50, #34495e); } /* ночь */
+    100% { background: linear-gradient(to bottom, #87ceeb, #f0e68c); } /* день */
   }
 
   .container {
-    width: 100%;
     max-width: 480px;
-    background: rgba(255 255 255 / 0.9);
-    border-radius: 16px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
-    padding: 24px 28px 28px;
-    text-align: center;
+    margin: 20px auto;
+    padding: 20px;
+    background: rgba(255 255 255 / 0.95);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.25);
     position: relative;
-    user-select: none;
+    z-index: 1;
   }
 
   h1 {
-    font-weight: 900;
-    font-size: 3rem;
-    letter-spacing: 0.15em;
-    margin-bottom: 18px;
-    color: #1b263b;
-    text-shadow: 0 0 6px rgba(0,0,0,0.1);
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: 700;
+    font-size: 2.7rem;
+    color: #222;
+    text-shadow: 1px 1px 2px #aaa;
   }
 
   .stats {
     display: flex;
     justify-content: space-around;
-    margin-bottom: 12px;
-    font-weight: 700;
+    margin-bottom: 10px;
+    font-weight: 600;
     font-size: 1.1rem;
-    color: #333;
   }
 
-  #coinsDisplay {
-    margin-bottom: 20px;
-    font-weight: 700;
-    font-size: 1.3rem;
-    color: #b12704;
-    user-select: text;
+  .retro-label {
+    color: #555;
   }
 
-  #clickBtn {
-    width: 260px;
+  .car-img {
+    display: block;
+    margin: 0 auto 20px auto;
+    width: 240px;
     cursor: pointer;
-    transition: transform 0.2s ease;
-    filter: drop-shadow(2px 4px 4px rgba(0,0,0,0.3));
-    border-radius: 12px;
+    user-select: none;
+    filter: drop-shadow(0 0 6px rgba(0,0,0,0.3));
+    transition: transform 0.15s ease;
   }
-  #clickBtn:active {
+  .car-img:active {
     transform: scale(0.95);
-    filter: drop-shadow(1px 2px 3px rgba(0,0,0,0.2));
-  }
-
-  /* Анимация подпрыгивания при клике */
-  .jump {
-    animation: jumpAnim 0.4s ease forwards;
-  }
-  @keyframes jumpAnim {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
-    100% { transform: translateY(0); }
   }
 
   .tabs {
     display: flex;
-    justify-content: center;
-    margin: 24px 0 14px;
-    gap: 12px;
+    justify-content: space-around;
+    margin-bottom: 20px;
   }
-
   .tab-btn {
-    background: #1b263b;
-    color: #f0f8ff;
-    border: none;
     padding: 10px 18px;
-    border-radius: 50px;
-    font-weight: 700;
+    font-size: 1rem;
     cursor: pointer;
-    box-shadow: 0 6px 12px rgba(27, 38, 59, 0.4);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    background: #3b5998;
+    color: white;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
     user-select: none;
   }
   .tab-btn:hover {
-    background: #3a5068;
-    box-shadow: 0 8px 20px rgba(58, 80, 104, 0.7);
+    background: #2d4373;
   }
   .tab-btn.active {
-    background: #ff5e5e;
-    box-shadow: 0 8px 25px rgba(255,94,94,0.9);
+    background: #1a2b4a;
   }
 
   .tab-content {
     display: none;
-    max-height: 450px;
-    overflow-y: auto;
-    padding: 0 12px 8px;
   }
   .tab-content.active {
     display: block;
   }
 
   button.upgrade-btn, button.repair-btn {
-    background: #f0f8ff;
-    border: 2px solid #1b263b;
-    border-radius: 12px;
-    padding: 12px 16px;
-    font-weight: 700;
-    font-size: 1rem;
-    margin: 8px 0;
-    cursor: pointer;
+    display: block;
+    margin: 10px 0;
+    padding: 10px 14px;
     width: 100%;
-    transition: background-color 0.25s ease, border-color 0.3s ease;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 8px;
+    border: 1px solid #3b5998;
+    background: #e7f0ff;
+    transition: background-color 0.3s ease;
+    user-select: none;
   }
   button.upgrade-btn:hover:not(:disabled),
   button.repair-btn:hover:not(:disabled) {
-    background-color: #d3e0f0;
-    border-color: #ff5e5e;
+    background: #c4d9ff;
   }
   button:disabled {
+    opacity: 0.5;
     cursor: not-allowed;
-    opacity: 0.45;
   }
 
   #notification {
@@ -148,18 +121,17 @@
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background: #ffefd5;
-    border: 2px solid #ff5e5e;
-    padding: 12px 22px;
-    border-radius: 30px;
+    background: #fff9db;
+    border: 1px solid #ffc107;
+    padding: 12px 25px;
+    border-radius: 8px;
     font-weight: 700;
-    font-size: 1.15rem;
-    color: #b12704;
-    box-shadow: 0 0 18px #ff5e5eaa;
+    color: #665500;
+    box-shadow: 0 0 15px rgba(255,193,7,0.7);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.4s ease;
-    z-index: 10000;
+    z-index: 9999;
     user-select: none;
   }
   #notification.show {
@@ -167,243 +139,314 @@
     pointer-events: auto;
   }
 
-  /* Стили для списка лидеров */
-  #leaderList {
-    list-style: none;
-    padding: 0;
-    font-weight: 600;
-    color: #222;
-    max-height: 320px;
-    overflow-y: auto;
+  /* Прочность (durability) индикатор */
+  #durability-bar {
+    width: 100%;
+    height: 16px;
+    background: #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
   }
-  #leaderList li {
-    margin: 8px 0;
-    padding: 6px 14px;
-    border-radius: 10px;
-    background: #e9f0f7;
-    box-shadow: inset 0 0 6px #a3bcd6;
-    user-select: text;
+  #durability-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4caf50, #388e3c);
+    width: 100%;
+    transition: width 0.3s ease;
   }
 </style>
 </head>
 <body>
   <div class="container">
-    <h1>МОСКВИЧ</h1>
+    <h1>МОСКВИЧ 412 КЛИКЕР</h1>
 
-    <div class="stats" aria-label="Игровая статистика">
-      <p><span>Пробег:</span> <strong id="score">0</strong> км</p>
-      <p><span>Скорость:</span> <strong id="perSecond">0</strong> км/ч</p>
+    <div class="stats">
+      <div><span class="retro-label">Пробег:</span> <span id="score">0</span> км</div>
+      <div><span class="retro-label">Скорость:</span> <span id="perSecond">0</span> км/ч</div>
     </div>
 
-    <div id="coinsDisplay" aria-live="polite" aria-atomic="true">
-      💰 Монеты: <span id="coins">0</span>
+    <div id="durability-bar" title="Прочность машины">
+      <div id="durability-fill"></div>
     </div>
 
-    <img src="https://raw.githubusercontent.com/prokazin/Mosk/main/images/moskvich.png" alt="Москвич 412" id="clickBtn" tabindex="0" aria-label="Кликать для увеличения пробега" />
+    <img src="https://raw.githubusercontent.com/prokazin/Mosk/main/images/moskvich.png" alt="Москвич 412" id="clickBtn" class="car-img" title="Кликни по машине, чтобы ехать!">
 
-    <div class="tabs" role="tablist" aria-label="Переключение вкладок">
-      <button class="tab-btn active" data-tab="tuning" role="tab" aria-selected="true" tabindex="0">⚙️ Тюнинг</button>
-      <button class="tab-btn" data-tab="repair" role="tab" aria-selected="false" tabindex="-1">🔧 Ремонт</button>
-      <button class="tab-btn" data-tab="leaders" role="tab" aria-selected="false" tabindex="-1">🏁 Лидеры</button>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="tuning">⚙️ Тюнинг</button>
+      <button class="tab-btn" data-tab="repair">🔧 Ремонт</button>
+      <button class="tab-btn" data-tab="leaders">🏁 Лидеры</button>
     </div>
 
-    <section class="tab-content active" id="tuning" role="tabpanel" tabindex="0" aria-labelledby="tuning-tab">
-      <h3>⚙️ Тюнинг:</h3>
-      <button class="upgrade-btn" id="upgrade1">Карбюратор (+8 км/ч) - 10 км</button>
-      <button class="upgrade-btn" id="upgrade2">Турбонаддув (+3 км за клик) - 50 км</button>
-      <button class="upgrade-btn" id="upgrade3">Спойлер (+30 км/ч) - 200 км</button>
-    </section>
+    <div class="tab-content active" id="tuning">
+      <h3>⚙️ Тюнинг</h3>
+      <button class="upgrade-btn" id="upgrade1">Карбюратор (+4 км/ч) — 20 км</button>
+      <button class="upgrade-btn" id="upgrade2">Турбонаддув (+2 км за клик) — 100 км</button>
+      <button class="upgrade-btn" id="upgrade3">Спойлер (+10 км/ч) — 400 км</button>
+    </div>
 
-    <section class="tab-content" id="repair" role="tabpanel" tabindex="0" aria-labelledby="repair-tab">
-      <h3>🔧 Ремонт:</h3>
-      <button class="repair-btn" id="fixClutch">Починить сцепление (100 км)</button>
-      <button class="repair-btn" id="addCoolant">Залить тосол (150 км)</button>
-      <button class="repair-btn" id="tuneJets">Подкрутить жиклёры (200 км)</button>
-    </section>
+    <div class="tab-content" id="repair">
+      <h3>🔧 Ремонт</h3>
+      <button class="repair-btn" id="fixClutch">Починить сцепление (150 км)</button>
+      <button class="repair-btn" id="addCoolant">Залить тосол (250 км)</button>
+      <button class="repair-btn" id="tuneJets">Подкрутить жиклёры (400 км)</button>
+    </div>
 
-    <section class="tab-content" id="leaders" role="tabpanel" tabindex="0" aria-labelledby="leaders-tab">
-      <h3>🏁 Лучшие водители:</h3>
-      <ul id="leaderList" aria-live="polite" aria-atomic="true">
-        <li>🏅 Легенда капота — 15000 км</li>
-        <li>👴 Ветеран трамблёра — 10000 км</li>
-        <li>🛠 Мастер кольца — 7500 км</li>
+    <div class="tab-content" id="leaders">
+      <h3>🏁 Лучшие водители</h3>
+      <ul id="leaderList">
+        <li>Загрузка рейтинга...</li>
       </ul>
-    </section>
+    </div>
   </div>
 
-  <div id="notification" role="alert" aria-live="assertive"></div>
+  <div id="notification"></div>
 
-  <script>
-    vkBridge.send('VKWebAppInit');
-
-    let score = parseInt(localStorage.getItem('score')) || 0;
-    let perClick = parseInt(localStorage.getItem('perClick')) || 2;
-    let perSecond = parseInt(localStorage.getItem('perSecond')) || 0;
-
-    let coins = parseInt(localStorage.getItem('coins')) || 0;
-    let clicksCount = parseInt(localStorage.getItem('clicksCount')) || 0;
-
-    const scoreElement = document.getElementById('score');
-    const perSecondElement = document.getElementById('perSecond');
-    const clickBtn = document.getElementById('clickBtn');
-
-    const upgrade1Btn = document.getElementById('upgrade1');
-    const upgrade2Btn = document.getElementById('upgrade2');
-    const upgrade3Btn = document.getElementById('upgrade3');
-
-    const fixClutchBtn = document.getElementById('fixClutch');
-    const addCoolantBtn = document.getElementById('addCoolant');
-    const tuneJetsBtn = document.getElementById('tuneJets');
-
-    const coinsDisplay = document.getElementById('coins');
-    const notification = document.getElementById('notification');
-    let notificationTimeout;
-
-    function showNotification(text) {
-      clearTimeout(notificationTimeout);
-      notification.textContent = text;
-      notification.classList.add('show');
-      notification.setAttribute('aria-hidden', 'false');
-      notificationTimeout = setTimeout(() => {
-        notification.classList.remove('show');
-        notification.setAttribute('aria-hidden', 'true');
-      }, 3500);
-    }
-
-    function updateUI() {
-      scoreElement.textContent = Math.floor(score);
-      perSecondElement.textContent = perSecond.toFixed(1);
-      coinsDisplay.textContent = coins;
-
-      upgrade1Btn.disabled = score < 10;
-      upgrade2Btn.disabled = score < 50;
-      upgrade3Btn.disabled = score < 200;
-
-      fixClutchBtn.disabled = score < 100;
-      addCoolantBtn.disabled = score < 150;
-      tuneJetsBtn.disabled = score < 200;
-    }
-
-    function saveGame() {
-      localStorage.setItem('score', score);
-      localStorage.setItem('perClick', perClick);
-      localStorage.setItem('perSecond', perSecond);
-      localStorage.setItem('coins', coins);
-      localStorage.setItem('clicksCount', clicksCount);
-    }
-
-    function clickHandler() {
-      score += perClick;
-      clicksCount++;
-      updateUI();
-      saveGame();
-
-      clickBtn.classList.remove('jump');
-      void clickBtn.offsetWidth; // триггер перезапуска анимации
-      clickBtn.classList.add('jump');
-
-      if (clicksCount % 100 === 0) {
-        coins++;
-        showNotification('🎉 Получена бонусная монета!');
-        saveGame();
-      }
-    }
-
-    function upgrade1() {
-      if (score >= 10) {
-        score -= 10;
-        perSecond += 8;
-        updateUI();
-        saveGame();
-        showNotification('⚙️ Карбюратор улучшен!');
-      }
-    }
-    function upgrade2() {
-      if (score >= 50) {
-        score -= 50;
-        perClick += 3;
-        updateUI();
-        saveGame();
-        showNotification('🚀 Турбонаддув установлен!');
-      }
-    }
-    function upgrade3() {
-      if (score >= 200) {
-        score -= 200;
-        perSecond += 30;
-        updateUI();
-        saveGame();
-        showNotification('🔥 Спойлер установлен!');
-      }
-    }
-
-    function fixClutch() {
-      if (score >= 100) {
-        score -= 100;
-        showNotification('🔧 Сцепление починено!');
-        updateUI();
-        saveGame();
-      }
-    }
-    function addCoolant() {
-      if (score >= 150) {
-        score -= 150;
-        showNotification('💧 Тосол залит!');
-        updateUI();
-        saveGame();
-      }
-    }
-    function tuneJets() {
-      if (score >= 200) {
-        score -= 200;
-        showNotification('⚙️ Жиклёры подкручены!');
-        updateUI();
-        saveGame();
-      }
-    }
-
-    clickBtn.addEventListener('click', clickHandler);
-
-    upgrade1Btn.addEventListener('click', upgrade1);
-    upgrade2Btn.addEventListener('click', upgrade2);
-    upgrade3Btn.addEventListener('click', upgrade3);
-
-    fixClutchBtn.addEventListener('click', fixClutch);
-    addCoolantBtn.addEventListener('click', addCoolant);
-    tuneJetsBtn.addEventListener('click', tuneJets);
-
-    // Таб переключения
-    const tabButtons = document.querySelectorAll('.tab-btn');
-    const tabContents = document.querySelectorAll('.tab-content');
-
-    tabButtons.forEach((btn, idx) => {
-      btn.addEventListener('click', () => {
-        tabButtons.forEach(b => {
-          b.classList.remove('active');
-          b.setAttribute('aria-selected', 'false');
-          b.tabIndex = -1;
-        });
-        tabContents.forEach(tc => tc.classList.remove('active'));
-
-        btn.classList.add('active');
-        btn.setAttribute('aria-selected', 'true');
-        btn.tabIndex = 0;
-        tabContents[idx].classList.add('active');
-        tabContents[idx].focus();
-      });
+<script>
+  // VK Bridge и ID приложения
+  const APP_ID = 53646023;
+  vkBridge.send('VKWebAppInit').then(() => {
+    console.log('VK Init OK');
+    vkBridge.send('VKWebAppGetUserInfo').then(data => {
+      userInfo = data;
+      loadLeaders();
     });
+  });
 
-    // Включаем первую вкладку по умолчанию
-    tabButtons[0].click();
+  // Переменные игры
+  let score = parseFloat(localStorage.getItem('score')) || 0;
+  let perClick = parseFloat(localStorage.getItem('perClick')) || 1;
+  let perSecond = parseFloat(localStorage.getItem('perSecond')) || 0.2;
+  let durability = parseFloat(localStorage.getItem('durability')) || 100;
+  const maxDurability = 100;
 
-    // Автоматическое увеличение score на perSecond каждую секунду
-    setInterval(() => {
-      score += perSecond;
-      updateUI();
-      saveGame();
-    }, 1000);
+  // Количество кликов для бонусов
+  let clicksCount = parseInt(localStorage.getItem('clicksCount')) || 0;
+
+  const scoreElement = document.getElementById('score');
+  const perSecondElement = document.getElementById('perSecond');
+  const clickBtn = document.getElementById('clickBtn');
+
+  const upgrade1Btn = document.getElementById('upgrade1');
+  const upgrade2Btn = document.getElementById('upgrade2');
+  const upgrade3Btn = document.getElementById('upgrade3');
+
+  const fixClutchBtn = document.getElementById('fixClutch');
+  const addCoolantBtn = document.getElementById('addCoolant');
+  const tuneJetsBtn = document.getElementById('tuneJets');
+
+  const durabilityFill = document.getElementById('durability-fill');
+
+  const notification = document.getElementById('notification');
+
+  // Вкладки
+  const tabs = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
+
+  let userInfo = null;
+
+  // Функции уведомлений
+  function showNotification(text) {
+    notification.textContent = text;
+    notification.classList.add('show');
+    setTimeout(() => notification.classList.remove('show'), 3500);
+  }
+
+  // Обновляем UI
+  function updateUI() {
+    scoreElement.textContent = score.toFixed(0);
+    perSecondElement.textContent = perSecond.toFixed(1);
+    durabilityFill.style.width = durability + '%';
+
+    // Обновляем кнопки апгрейдов (больше цена, кнопки блокируются)
+    upgrade1Btn.disabled = score < 20;
+    upgrade2Btn.disabled = score < 100;
+    upgrade3Btn.disabled = score < 400;
+
+    fixClutchBtn.disabled = score < 150 || durability >= maxDurability;
+    addCoolantBtn.disabled = score < 250 || durability >= maxDurability;
+    tuneJetsBtn.disabled = score < 400 || durability >= maxDurability;
+  }
+
+  // Сохраняем состояние
+  function saveGame() {
+    localStorage.setItem('score', score);
+    localStorage.setItem('perClick', perClick);
+    localStorage.setItem('perSecond', perSecond);
+    localStorage.setItem('durability', durability);
+    localStorage.setItem('clicksCount', clicksCount);
+  }
+
+  // Основной клик по машине
+  clickBtn.addEventListener('click', () => {
+    if (durability <= 0) {
+      showNotification('🚗 Машина сломана! Срочно почини!');
+      return;
+    }
+
+    // Износ: каждый клик снижает прочность
+    durability -= 0.5;
+    if (durability < 0) durability = 0;
+
+    // При износе бонусы падают вдвое
+    let effectivePerClick = durability > 0 ? perClick : perClick / 2;
+    score += effectivePerClick;
+    clicksCount++;
+
+    // Рандомный шанс поломки (5%)
+    if (Math.random() < 0.05 && durability > 0) {
+      durability -= 5;
+      if (durability < 0) durability = 0;
+      showNotification('🚨 Машина слегка поломалась! Почини её!');
+    }
 
     updateUI();
-  </script>
+    saveGame();
+  });
+
+  // Автоприрост очков (пер секунду)
+  setInterval(() => {
+    if (durability > 0) {
+      score += perSecond;
+    } else {
+      // Если машина сломана - перSecond = 0
+      score += 0;
+    }
+    updateUI();
+    saveGame();
+  }, 1000);
+
+  // Апгрейды
+  upgrade1Btn.addEventListener('click', () => {
+    if (score >= 20) {
+      score -= 20;
+      perSecond += 4;  // +4 км/ч
+      updateUI();
+      saveGame();
+      showNotification('👍 Карбюратор улучшен!');
+    }
+  });
+  upgrade2Btn.addEventListener('click', () => {
+    if (score >= 100) {
+      score -= 100;
+      perClick += 2;  // +2 км за клик
+      updateUI();
+      saveGame();
+      showNotification('🔥 Турбонаддув установлен!');
+    }
+  });
+  upgrade3Btn.addEventListener('click', () => {
+    if (score >= 400) {
+      score -= 400;
+      perSecond += 10;  // +10 км/ч
+      updateUI();
+      saveGame();
+      showNotification('🚀 Спойлер установлен!');
+    }
+  });
+
+  // Ремонтные работы
+  fixClutchBtn.addEventListener('click', () => {
+    if (score >= 150 && durability < maxDurability) {
+      score -= 150;
+      durability += 20;
+      if (durability > maxDurability) durability = maxDurability;
+      updateUI();
+      saveGame();
+      showNotification('🔧 Сцепление починено!');
+    }
+  });
+
+  addCoolantBtn.addEventListener('click', () => {
+    if (score >= 250 && durability < maxDurability) {
+      score -= 250;
+      durability += 35;
+      if (durability > maxDurability) durability = maxDurability;
+      updateUI();
+      saveGame();
+      showNotification('💧 Залит тосол!');
+    }
+  });
+
+  tuneJetsBtn.addEventListener('click', () => {
+    if (score >= 400 && durability < maxDurability) {
+      score -= 400;
+      durability += 50;
+      if (durability > maxDurability) durability = maxDurability;
+      updateUI();
+      saveGame();
+      showNotification('⚙️ Жиклёры настроены!');
+    }
+  });
+
+  // Вкладки
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabs.forEach(b => b.classList.remove('active'));
+      tabContents.forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // Рейтинг ВК - загрузка данных
+  async function loadLeaders() {
+    const leaderList = document.getElementById('leaderList');
+    leaderList.innerHTML = '<li>Загрузка рейтинга...</li>';
+
+    try {
+      const response = await vkBridge.send('VKWebAppCallAPIMethod', {
+        method: 'appWidgets.getAppLeaderboard',
+        params: {
+          app_id: APP_ID,
+          extended: 1,
+          limit: 10,
+          order: 'desc'
+        }
+      });
+
+      if (response && response.items && response.items.length > 0) {
+        leaderList.innerHTML = '';
+        response.items.forEach((item, i) => {
+          const li = document.createElement('li');
+          li.textContent = `${i+1}. ${item.user_name || 'Аноним'} — ${item.score} км`;
+          leaderList.appendChild(li);
+        });
+      } else {
+        leaderList.innerHTML = '<li>Рейтинг пустой</li>';
+      }
+    } catch (e) {
+      leaderList.innerHTML = '<li>Ошибка загрузки рейтинга</li>';
+      console.error('Ошибка рейтинга ВК:', e);
+    }
+  }
+
+  // Отправка результата в рейтинг (вызывается периодически)
+  async function sendScoreToVK() {
+    if (!userInfo) return;
+    try {
+      await vkBridge.send('VKWebAppCallAPIMethod', {
+        method: 'appWidgets.updateAppLeaderboard',
+        params: {
+          app_id: APP_ID,
+          user_id: userInfo.id,
+          score: Math.floor(score)
+        }
+      });
+      // Обновляем лидеров после отправки
+      loadLeaders();
+    } catch (e) {
+      console.warn('Не удалось отправить очки в ВК:', e);
+    }
+  }
+
+  // Отправляем очки каждые 30 секунд
+  setInterval(sendScoreToVK, 30000);
+
+  // Инициализация UI
+  updateUI();
+  loadLeaders();
+
+</script>
 </body>
 </html>
