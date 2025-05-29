@@ -6,7 +6,6 @@ let lastWearCheck = parseInt(localStorage.getItem('lastWearCheck')) || 0;
 const scoreElement = document.getElementById('score');
 const perSecondElement = document.getElementById('perSecond');
 const clickBtn = document.getElementById('clickBtn');
-const manualClickBtn = document.getElementById('manualClickBtn');
 
 const upgrade1Btn = document.getElementById('upgrade1');
 const upgrade2Btn = document.getElementById('upgrade2');
@@ -51,7 +50,6 @@ function addScore() {
 }
 
 clickBtn.addEventListener('click', addScore);
-manualClickBtn.addEventListener('click', addScore);
 
 upgrade1Btn.addEventListener('click', () => {
   if (score >= 10) {
@@ -117,5 +115,12 @@ setInterval(() => {
   updateUI();
   saveProgress();
 }, 1000);
+
+function showTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(tab => {
+    tab.style.display = 'none';
+  });
+  document.getElementById(tabId).style.display = 'block';
+}
 
 updateUI();
