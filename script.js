@@ -181,6 +181,13 @@ function renderLeaderboard() {
   leaderboard.sort((a,b) => b.score - a.score);
   if(leaderboard.length > 10) leaderboard = leaderboard.slice(0,10);
 
+  let health = parseFloat(localStorage.getItem('health')) || 100;
+let distanceSinceLastHealthDrop = 0;
+
+const healthValue = document.getElementById('healthValue');
+const healthBar = document.getElementById('healthBar');
+const healthText = document.getElementById('healthText');
+  
   // Выводим список
   leaderList.innerHTML = '';
   leaderboard.forEach((player, i) => {
