@@ -404,6 +404,133 @@
     }, 1000);
 
     updateUI();
-  </script>
+ </script>
+// В начале скрипта, после объявления переменных, добавляем:
+const BALANCE_MODIFIER = {
+  basePerClick: 0.5, // Множитель базового клика (0.5 = уменьшение в 2 раза)
+  upgradeCosts: 2.5, // Множитель стоимости улучшений
+  upgradeEffects: 0.6, // Множитель эффекта улучшений
+  repairCosts: 3, // Множитель стоимости ремонта
+  coinsInterval: 1.5 // Множитель интервала для монет
+};
+
+// Модифицируем функции улучшений и клика:
+function clickHandler() {
+  score += perClick * BALANCE_MODIFIER.basePerClick; // Уменьшаем базовый клик
+  clicksCount++;
+  
+  // Обновление прогресса монет с новым интервалом
+  const modifiedInterval = COINS_INTERVAL * BALANCE_MODIFIER.coinsInterval;
+  const progress = (clicksCount % modifiedInterval) / modifiedInterval * 100;
+  const remaining = modifiedInterval - (clicksCount % modifiedInterval);
+  coinProgress.style.width = `${progress}%`;
+  progressText.textContent = `${modifiedInterval - remaining}/${modifiedInterval}`;
+  
+  if (clicksCount % modifiedInterval === 0) {
+    coins++;
+    showNotification('🎉 Получена бонусная монета!');
+    setTimeout(() => {
+      coinProgress.style.width = '0%';
+      progressText.textContent = `0/${modifiedInterval}`;
+    }, 500);
+  }
+  
+  updateUI();
+  saveGame();
+  
+  clickBtn.classList.remove('jump');
+  void clickBtn.offsetWidth;
+  clickBtn.classList.add('jump');
+}
+
+// Модифицируем функции улучшений:
+function upgrade1() {
+  const cost = 10 * BALANCE_MODIFIER.upgradeCosts;
+  const effect = 8 * BALANCE_MODIFIER.upgradeEffects;
+  
+  if (score >= cost) {
+    score -= cost;
+    perSecond += effect;
+    updateUI();
+    saveGame();
+    showNotification(`⚙️ Карбюратор улучшен! +${effect} км/ч`);
+  }
+}
+
+function upgrade2() {
+  const cost = 50 * BALANCE_MODIFIER.upgradeCosts;
+  const effect = 3 * BALANCE_MODIFIER.upgradeEffects;
+  
+  if (score >= cost) {
+    score -= cost;
+    perClick += effect;
+    updateUI();
+    saveGame();
+    showNotification(`🚀 Турбонаддув установлен! +${effect} км за клик`);
+  }
+}
+
+function upgrade3() {
+  const cost = 200 * BALANCE_MODIFIER.upgradeCosts;
+  const effect = 30 * BALANCE_MODIFIER.upgradeEffects;
+  
+  if (score >= cost) {
+    score -= cost;
+    perSecond += effect;
+    updateUI();
+    saveGame();
+    showNotification(`🔥 Спойлер установлен! +${effect} км/ч`);
+  }
+}
+
+// Модифицируем функции ремонта:
+function fixClutch() {
+  const cost = 100 * BALANCE_MODIFIER.repairCosts;
+  
+  if (score >= cost) {
+    score -= cost;
+    showNotification('🔧 Сцепление починено!');
+    updateUI();
+    saveGame();
+  }
+}
+
+function addCoolant() {
+  const cost = 150 * BALANCE_MODIFIER.repairCosts;
+  
+  if (score >= cost) {
+    score -= cost;
+    showNotification('💧 Тосол залит!');
+    updateUI();
+    saveGame();
+  }
+}
+
+function tuneJets() {
+  const cost = 200 * BALANCE_MODIFIER.repairCosts;
+  
+  if (score >= cost) {
+    score -= cost;
+    showNotification('⚙️ Жиклёры подкручены!');
+    updateUI();
+    saveGame();
+  }
+}
+
+// Обновляем функцию updateUI для новых цен:
+function updateUI() {
+  scoreElement.textContent = Math.floor(score);
+  perSecondElement.textContent = (perSecond * BALANCE_MODIFIER.basePerClick).toFixed(1);
+  coinsDisplay.textContent = coins;
+  updateProgressBar();
+
+  upgrade1Btn.disabled = score < (10 * BALANCE_MODIFIER.upgradeCosts);
+  upgrade2Btn.disabled = score < (50 * BALANCE_MODIFIER.upgradeCosts);
+  upgrade3Btn.disabled = score < (200 * BALANCE_MODIFIER.upgradeCosts);
+
+  fixClutchBtn.disabled = score < (100 * BALANCE_MODIFIER.repairCosts);
+  addCoolantBtn.disabled = score < (150 * BALANCE_MODIFIER.repairCosts);
+  tuneJetsBtn.disabled = score < (200 * BALANCE_MODIFIER.repairCosts);
+}
 </body>
 </html>
