@@ -1,1 +1,130 @@
-/* CSS будет добавлен позже */
+/* Фон с анимацией */
+#background {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url('https://raw.githubusercontent.com/prokazin/Mosk/main/images/Fon.JPG');
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+  background-position-x: 0;
+  animation: bgScroll 60s linear infinite;
+  z-index: -1;
+  opacity: 0.9;
+}
+
+@keyframes bgScroll {
+  from { background-position-x: 0; }
+  to { background-position-x: 1000px; }
+}
+
+body, html {
+  margin: 0; padding: 0; font-family: Arial, sans-serif; background: transparent;
+  height: 100vh; overflow-x: hidden;
+}
+.container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 20px;
+  background: rgba(255 255 255 / 0.85);
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+  position: relative;
+  z-index: 1;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 12px;
+  font-weight: bold;
+  font-size: 2.5rem;
+  animation: fadeIn 2s ease forwards;
+  opacity: 0;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+.stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 10px;
+}
+.retro-label {
+  font-weight: 600;
+}
+
+.car-img {
+  display: block;
+  margin: 0 auto 15px auto;
+  width: 250px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.tabs {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 15px;
+}
+.tab-btn {
+  padding: 8px 14px;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  background: #3b5998;
+  color: white;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+.tab-btn:hover {
+  background: #2d4373;
+}
+
+.tab-content {
+  display: none;
+}
+.tab-content.active {
+  display: block;
+}
+
+.upgrade-btn, .repair-btn {
+  display: block;
+  margin: 8px 0;
+  padding: 8px 10px;
+  width: 100%;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  border: 1px solid #3b5998;
+  background: #e7f0ff;
+  transition: background-color 0.3s ease;
+}
+.upgrade-btn:hover:not(:disabled),
+.repair-btn:hover:not(:disabled) {
+  background: #c4d9ff;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fffae6;
+  border: 1px solid #ffc107;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  box-shadow: 0 0 10px rgba(255,193,7,0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+  z-index: 9999;
+}
+#notification.show {
+  opacity: 1;
+  pointer-events: auto;
+}
