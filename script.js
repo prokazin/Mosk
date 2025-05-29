@@ -1,5 +1,4 @@
-
-let score = 0;
+let score = 1000;  // Начальное значение, чтобы можно было уменьшать сразу
 let perClick = 1;
 let perSecond = 0;
 
@@ -13,18 +12,22 @@ const upgrade3Btn = document.getElementById('upgrade3');
 
 vkBridge.send('VKWebAppInit');
 
-clickBtn.addEventListener('click', () => addScore());
-manualClickBtn.addEventListener('click', () => addScore());
+clickBtn.addEventListener('click', () => reduceScore());
+manualClickBtn.addEventListener('click', () => reduceScore());
 
-function addScore() {
-    score += perClick;
-    updateUI();
+function reduceScore() {
+    if (score >= perClick) {
+        score -= perClick;  // уменьшаем пробег при клике
+        updateUI();
+    } else {
+        alert('Недостаточно пробега для клика!');
+    }
 }
 
 upgrade1Btn.addEventListener('click', () => {
     if (score >= 10) {
         score -= 10;
-        perSecond += 5;
+        perSecond = Math.max(0, perSecond - 5);  // уменьшаем скорость, минимум 0
         updateUI();
     } else {
         alert('Недостаточно пробега!');
@@ -34,7 +37,7 @@ upgrade1Btn.addEventListener('click', () => {
 upgrade2Btn.addEventListener('click', () => {
     if (score >= 50) {
         score -= 50;
-        perClick += 2;
+        perClick = Math.max(0, perClick - 2);  // уменьшаем пробег за клик, минимум 0
         updateUI();
     } else {
         alert('Недостаточно пробега!');
@@ -44,7 +47,7 @@ upgrade2Btn.addEventListener('click', () => {
 upgrade3Btn.addEventListener('click', () => {
     if (score >= 200) {
         score -= 200;
-        perSecond += 20;
+        perSecond = Math.max(0, perSecond - 20);  // уменьшаем скорость, минимум 0
         updateUI();
     } else {
         alert('Недостаточно пробега!');
@@ -52,7 +55,11 @@ upgrade3Btn.addEventListener('click', () => {
 });
 
 setInterval(() => {
-    score += perSecond;
+    if (score >= perSecond) {
+      score -= perSecond; // уменьшаем пробег каждую секунду на скорость
+    } else {
+      score = 0;
+    }
     updateUI();
 }, 1000);
 
