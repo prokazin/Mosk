@@ -1,3 +1,4 @@
+
 let score = 0;
 let perClick = 1;
 let perSecond = 0;
