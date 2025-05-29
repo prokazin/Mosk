@@ -6,6 +6,7 @@
   <title>Москвич 412 Кликер</title>
   <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
   <style>
+    /* стили из предыдущего сообщения */
     body {
       font-family: Arial, sans-serif;
       background: #f0f0f0;
@@ -135,173 +136,60 @@
   </div>
 
   <script>
-    vkBridge.send('VKWebAppInit');
+    document.addEventListener('DOMContentLoaded', () => {
+      vkBridge.send('VKWebAppInit');
 
-    // Основные значения
-    let score = parseInt(localStorage.getItem('score')) || 0;
+      let score = parseInt(localStorage.getItem('score')) || 0;
 
-    // Базовые значения без износа
-    let basePerClick = parseFloat(localStorage.getItem('basePerClick')) || 1;
-    let basePerSecond = parseFloat(localStorage.getItem('basePerSecond')) || 0;
+      let basePerClick = parseFloat(localStorage.getItem('basePerClick')) || 1;
+      let basePerSecond = parseFloat(localStorage.getItem('basePerSecond')) || 0;
 
-    // Текущие значения с учетом износа
-    let perClick = basePerClick;
-    let perSecond = basePerSecond;
+      let perClick = basePerClick;
+      let perSecond = basePerSecond;
 
-    // Износ сцепления в процентах (0 - 100)
-    let clutchWearLevel = parseFloat(localStorage.getItem('clutchWearLevel')) || 0;
+      let clutchWearLevel = parseFloat(localStorage.getItem('clutchWearLevel')) || 0;
+      let lastWearCheck = parseInt(localStorage.getItem('lastWearCheck')) || 0;
 
-    // Последний пробег, при котором проверялся износ
-    let lastWearCheck = parseInt(localStorage.getItem('lastWearCheck')) || 0;
+      const scoreElement = document.getElementById('score');
+      const perSecondElement = document.getElementById('perSecond');
+      const clickBtn = document.getElementById('clickBtn');
 
-    // DOM элементы
-    const scoreElement = document.getElementById('score');
-    const perSecondElement = document.getElementById('perSecond');
-    const clickBtn = document.getElementById('clickBtn');
+      const upgrade1Btn = document.getElementById('upgrade1');
+      const upgrade2Btn = document.getElementById('upgrade2');
+      const upgrade3Btn = document.getElementById('upgrade3');
 
-    const upgrade1Btn = document.getElementById('upgrade1');
-    const upgrade2Btn = document.getElementById('upgrade2');
-    const upgrade3Btn = document.getElementById('upgrade3');
+      const fixClutchBtn = document.getElementById('fixClutch');
+      const addCoolantBtn = document.getElementById('addCoolant');
+      const tuneJetsBtn = document.getElementById('tuneJets');
 
-    const fixClutchBtn = document.getElementById('fixClutch');
-    const addCoolantBtn = document.getElementById('addCoolant');
-    const tuneJetsBtn = document.getElementById('tuneJets');
-
-    // Обновление UI с учётом текущих значений
-    function updateStatsAfterWear() {
-      const wearFactor = clutchWearLevel / 200; // максимум 0.5 (50% снижения)
-      perClick = Math.max(1, basePerClick * (1 - wearFactor));
-      perSecond = Math.max(0, basePerSecond * (1 - wearFactor));
-    }
-
-    function updateUI() {
-      scoreElement.textContent = Math.floor(score);
-      perSecondElement.textContent = perSecond.toFixed(1);
-
-      upgrade1Btn.disabled = score < 10;
-      upgrade2Btn.disabled = score < 50;
-      upgrade3Btn.disabled = score < 200;
-
-      fixClutchBtn.disabled = score < 100 || clutchWearLevel === 0;
-      addCoolantBtn.disabled = score < 150;
-      tuneJetsBtn.disabled = score < 200;
-    }
-
-    function saveProgress() {
-      localStorage.setItem('score', score);
-      localStorage.setItem('basePerClick', basePerClick);
-      localStorage.setItem('basePerSecond', basePerSecond);
-      localStorage.setItem('clutchWearLevel', clutchWearLevel);
-      localStorage.setItem('lastWearCheck', lastWearCheck);
-    }
-
-    function checkWear() {
-      const wearInterval = 500; // каждые 500 км проверяем износ
-      if (score - lastWearCheck >= wearInterval) {
-        lastWearCheck = score;
-
-        // Износ увеличивается с каждым шагом
-        const wearIncrease = 0.5 + (score / 10000); // рост износа с ростом пробега
-        clutchWearLevel = Math.min(100, clutchWearLevel + wearIncrease);
-
-        updateStatsAfterWear();
-
-        alert(`⚙️ Износ сцепления: ${clutchWearLevel.toFixed(1)}%. Характеристики снижены.`);
-
-        updateUI();
-        saveProgress();
+      function updateStatsAfterWear() {
+        const wearFactor = clutchWearLevel / 200;
+        perClick = Math.max(1, basePerClick * (1 - wearFactor));
+        perSecond = Math.max(0, basePerSecond * (1 - wearFactor));
       }
-    }
 
-    function addScore() {
-      score += perClick;
-      checkWear();
-      updateUI();
-      saveProgress();
-    }
+      function updateUI() {
+        scoreElement.textContent = Math.floor(score);
+        perSecondElement.textContent = perSecond.toFixed(1);
 
-    clickBtn.addEventListener('click', addScore);
+        upgrade1Btn.disabled = score < 10;
+        upgrade2Btn.disabled = score < 50;
+        upgrade3Btn.disabled = score < 200;
 
-    upgrade1Btn.addEventListener('click', () => {
-      if (score >= 10) {
-        score -= 10;
-        basePerSecond += 5;
-        updateStatsAfterWear();
-        updateUI();
-        saveProgress();
+        fixClutchBtn.disabled = score < 100 || clutchWearLevel === 0;
+        addCoolantBtn.disabled = score < 150;
+        tuneJetsBtn.disabled = score < 200;
       }
-    });
 
-    upgrade2Btn.addEventListener('click', () => {
-      if (score >= 50) {
-        score -= 50;
-        basePerClick += 2;
-        updateStatsAfterWear();
-        updateUI();
-        saveProgress();
+      function saveProgress() {
+        localStorage.setItem('score', score);
+        localStorage.setItem('basePerClick', basePerClick);
+        localStorage.setItem('basePerSecond', basePerSecond);
+        localStorage.setItem('clutchWearLevel', clutchWearLevel);
+        localStorage.setItem('lastWearCheck', lastWearCheck);
       }
-    });
 
-    upgrade3Btn.addEventListener('click', () => {
-      if (score >= 200) {
-        score -= 200;
-        basePerSecond += 20;
-        updateStatsAfterWear();
-        updateUI();
-        saveProgress();
-      }
-    });
-
-    fixClutchBtn.addEventListener('click', () => {
-      if (score >= 100) {
-        if (clutchWearLevel > 0) {
-          score -= 100;
-          clutchWearLevel = 0;
-          updateStatsAfterWear();
-          alert("✅ Сцепление отремонтировано! Износ сброшен.");
-          updateUI();
-          saveProgress();
-        } else {
-          alert("Сцепление в норме, ремонт не нужен.");
-        }
-      } else {
-        alert("Недостаточно пробега для ремонта сцепления!");
-      }
-    });
-
-    addCoolantBtn.addEventListener('click', () => {
-      if (score >= 150) {
-        score -= 150;
-        basePerClick += 1;
-        updateStatsAfterWear();
-        alert("✅ Тосол залит!");
-        updateUI();
-        saveProgress();
-      } else {
-        alert("Недостаточно пробега для заливки тосола!");
-      }
-    });
-
-    tuneJetsBtn.addEventListener('click', () => {
-      if (score >= 200) {
-        score -= 200;
-        basePerClick += 1;
-        basePerSecond += 1;
-        updateStatsAfterWear();
-        alert("✅ Жиклёры подкручены!");
-        updateUI();
-        saveProgress();
-      } else {
-        alert("Недостаточно пробега для подкрутки жиклёров!");
-      }
-    });
-
-    // Автоначисление пробега в секунду
-    setInterval(() => {
-      score += perSecond;
-      checkWear();
-      updateUI();
-      saveProgress();
-    }, 1000);
-
-    // Вклад
+      function checkWear() {
+        const wearInterval = 500;
+        if (score - lastWearCheck >= wearInterval) {
+          lastWearCheck = score;
