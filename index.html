@@ -2,152 +2,47 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Москвич 412 Кликер | VK Mini App</title>
   <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    /* Вкладки */
-    .tabs {
-      display: flex;
-      margin-bottom: 20px;
-      background: #222;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    .tab-button {
-      flex: 1;
-      padding: 12px 0;
-      font-weight: bold;
-      cursor: pointer;
-      background: #333;
-      color: #eee;
-      border: none;
-      transition: background 0.3s;
-      user-select: none;
-    }
-    .tab-button.active,
-    .tab-button:hover {
-      background: #ff5722;
-      color: white;
-    }
-    .tab-content {
-      display: none;
-      background: #222;
-      color: white;
-      padding: 20px;
-      border-radius: 8px;
-    }
-    .tab-content.active {
-      display: block;
-    }
-    /* Стиль кнопок апгрейдов */
-    .upgrade-btn {
-      display: block;
-      width: 100%;
-      margin-bottom: 12px;
-      padding: 12px;
-      font-size: 1rem;
-      background: #ff5722;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    .upgrade-btn:hover {
-      background: #e64a19;
-    }
-    /* Кнопка клика */
-    .clicker-btn {
-      background: #ff5722;
-      color: white;
-      font-weight: bold;
-      border: none;
-      border-radius: 6px;
-      padding: 14px 24px;
-      cursor: pointer;
-      margin-top: 12px;
-      transition: background 0.3s;
-      font-size: 1.1rem;
-    }
-    .clicker-btn:hover {
-      background: #e64a19;
-    }
-    .car-img {
-      cursor: pointer;
-      max-width: 100%;
-      display: block;
-      margin: 20px auto;
-    }
-    .stats p {
-      font-size: 1.1rem;
-      margin: 8px 0;
-    }
-    .retro-label {
-      font-weight: bold;
-      color: #ffa726;
-    }
-  </style>
 </head>
 <body>
   <div class="container">
     <h1>🚗 Москвич 412 Кликер 🚗</h1>
 
-    <!-- Вкладки -->
-    <div class="tabs">
-      <button class="tab-button active" data-tab="game">Игра</button>
-      <button class="tab-button" data-tab="upgrades">Улучшения</button>
+    <div class="stats">
+      <p><span class="retro-label">Пробег:</span> <span id="score">0</span> км</p>
+      <p><span class="retro-label">Скорость:</span> <span id="perSecond">0</span> км/ч</p>
     </div>
 
-    <!-- Контент вкладок -->
-    <div id="game" class="tab-content active">
-      <div class="stats">
-        <p><span class="retro-label">Пробег:</span> <span id="score">0</span> км</p>
-        <p><span class="retro-label">Скорость:</span> <span id="perSecond">0</span> км/ч</p>
-      </div>
+    <img src="images/moskvich.png" class="car-img" id="clickBtn" alt="Москвич 412">
+    <button class="clicker-btn" id="manualClickBtn">ТУНДУ-МОСКВИЧ!</button>
 
-      <img
-        src="images/moskvich.png"
-        class="car-img"
-        id="clickBtn"
-        alt="Москвич 412"
-      />
-      <button class="clicker-btn" id="manualClickBtn">ТУНДУ-МОСКВИЧ!</button>
-    </div>
-
-    <div id="upgrades" class="tab-content">
+    <div class="upgrades">
       <h3>⚙️ Тюнинг:</h3>
-      <button class="upgrade-btn" id="upgrade1">
-        Карбюратор (+5 км/ч) - 10 км
-      </button>
-      <button class="upgrade-btn" id="upgrade2">
-        Турбонаддув (+2 км за клик) - 50 км
-      </button>
-      <button class="upgrade-btn" id="upgrade3">
-        Спойлер (+20 км/ч) - 200 км
-      </button>
+      <button class="upgrade-btn" id="upgrade1">Карбюратор (+5 км/ч) - 10 км</button>
+      <button class="upgrade-btn" id="upgrade2">Турбонаддув (+2 км за клик) - 50 км</button>
+      <button class="upgrade-btn" id="upgrade3">Спойлер (+20 км/ч) - 200 км</button>
+    </div>
+
+    <div class="repairs">
+      <h3>🔧 Ремонт:</h3>
+      <button class="repair-btn" id="fixClutch">Починить сцепление (100 км)</button>
+      <button class="repair-btn" id="addCoolant">Залить тосол (150 км)</button>
+      <button class="repair-btn" id="tuneJets">Подкрутить жиклёры (200 км)</button>
+    </div>
+
+    <div class="leaderboard">
+      <h3>🏁 Лучшие водители:</h3>
+      <ul id="leaderList">
+        <li>🏅 Легенда капота — 15000 км</li>
+        <li>👴 Ветеран трамблёра — 10000 км</li>
+        <li>🛠 Мастер кольца — 7500 км</li>
+      </ul>
     </div>
   </div>
 
   <script src="script.js"></script>
-  <script>
-    // Логика переключения вкладок
-    const tabButtons = document.querySelectorAll(".tab-button");
-    const tabContents = document.querySelectorAll(".tab-content");
-
-    tabButtons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        tabButtons.forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-
-        tabContents.forEach((content) =>
-          content.id === btn.dataset.tab
-            ? content.classList.add("active")
-            : content.classList.remove("active")
-        );
-      });
-    });
-  </script>
 </body>
 </html>

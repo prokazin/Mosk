@@ -1,37 +1,52 @@
-#manualClickBtn {
-  background: none;
-  color: #ff5722;
-  border: 2px solid #ff5722;
-  padding: 12px 24px;
+.container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+  background-color: #f0f0f0;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+h1 {
+  text-align: center;
+}
+
+.stats, .upgrades, .repairs, .leaderboard {
+  margin-top: 20px;
+}
+
+.retro-label {
   font-weight: bold;
-  font-size: 1.1rem;
+}
+
+.car-img {
+  width: 100%;
+  margin: 10px 0;
+}
+
+.clicker-btn, .upgrade-btn, .repair-btn {
+  display: block;
+  width: 100%;
+  margin: 5px 0;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
   border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s, color 0.3s;
-  user-select: none;
-}
-
-#manualClickBtn:hover {
-  background: #ff5722;
+  background-color: #005bbb;
   color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-#manualClickBtn:active,
-#manualClickBtn:focus {
-  outline: none;
-  background: none !important;
-  color: #e64a19;
-  border-color: #e64a19;
-  box-shadow: none !important;
+.clicker-btn:hover, .upgrade-btn:hover, .repair-btn:hover {
+  background-color: #003f7f;
 }
 
-/* Размеры текста для пробега и скорости */
-.stats p {
-  font-size: 0.9rem;
-  margin: 6px 0;
+.leaderboard ul {
+  padding-left: 20px;
 }
 
-#score, #perSecond {
-  font-size: 1.1rem;
-  font-weight: bold;
+.leaderboard li {
+  margin-bottom: 4px;
 }
