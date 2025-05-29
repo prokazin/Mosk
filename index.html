@@ -1,28 +1,29 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Москвич 412 Кликер</title>
-  <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Москвич 412 Кликер</title>
+<script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="background"></div>
+  <div id="background"></div>
+
   <div class="container">
-    <h1 class="animated-title">МОСКВИЧ</h1>
+    <h1>МОСКВИЧ</h1>
 
     <div class="stats">
       <p><span class="retro-label">Пробег:</span> <span id="score">0</span> км</p>
       <p><span class="retro-label">Скорость:</span> <span id="perSecond">0</span> км/ч</p>
     </div>
 
-    <img src="images/moskvich.png" class="car-img" id="clickBtn" alt="Москвич 412">
+    <img src="https://raw.githubusercontent.com/prokazin/Mosk/main/images/moskvich.png" alt="Москвич 412" id="clickBtn" class="car-img" />
 
     <div class="tabs">
-      <button class="tab-btn" onclick="showTab('tuning')">⚙️ Тюнинг</button>
-      <button class="tab-btn" onclick="showTab('repair')">🔧 Ремонт</button>
-      <button class="tab-btn" onclick="showTab('leaders')">🏁 Лидеры</button>
+      <button class="tab-btn" data-tab="tuning">⚙️ Тюнинг</button>
+      <button class="tab-btn" data-tab="repair">🔧 Ремонт</button>
+      <button class="tab-btn" data-tab="leaders">🏁 Лидеры</button>
     </div>
 
     <div class="tab-content" id="tuning">
@@ -32,22 +33,20 @@
       <button class="upgrade-btn" id="upgrade3">Спойлер (+20 км/ч) - 200 км</button>
     </div>
 
-    <div class="tab-content" id="repair" style="display:none;">
+    <div class="tab-content" id="repair">
       <h3>🔧 Ремонт:</h3>
       <button class="repair-btn" id="fixClutch">Починить сцепление (100 км)</button>
       <button class="repair-btn" id="addCoolant">Залить тосол (150 км)</button>
       <button class="repair-btn" id="tuneJets">Подкрутить жиклёры (200 км)</button>
     </div>
 
-    <div class="tab-content" id="leaders" style="display:none;">
+    <div class="tab-content" id="leaders">
       <h3>🏁 Лучшие водители:</h3>
-      <ul id="leaderList">
-        <li>🏅 Легенда капота — 15000 км</li>
-        <li>👴 Ветеран трамблёра — 10000 км</li>
-        <li>🛠 Мастер кольца — 7500 км</li>
-      </ul>
+      <ul id="leaderList"></ul>
     </div>
   </div>
+
+  <div id="notification"></div>
 
   <script src="script.js"></script>
 </body>
