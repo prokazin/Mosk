@@ -2,108 +2,94 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Москвич 412 Кликер</title>
   <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: Arial, sans-serif;
       background: #f0f0f0;
-      color: #222;
-      margin: 0; padding: 0;
-      display: flex; justify-content: center; align-items: center; min-height: 100vh;
-    }
-    .container {
-      background: white;
-      border-radius: 10px;
-      padding: 20px 30px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.15);
-      max-width: 400px;
-      width: 100%;
+      margin: 0; padding: 20px;
       text-align: center;
+      color: #333;
     }
     h1 {
-      margin: 0 0 20px 0;
-      font-weight: 900;
-      font-size: 2.8rem;
+      font-size: 3em;
+      margin-bottom: 10px;
       opacity: 0;
       animation: fadeIn 2s forwards;
     }
     @keyframes fadeIn {
-      to { opacity: 1; }
+      to {opacity: 1;}
     }
-    .stats {
-      margin-bottom: 15px;
-      font-size: 1.1rem;
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .stats p {
+      font-size: 1.2em;
+      margin: 6px 0;
     }
     .retro-label {
-      font-weight: 700;
+      font-weight: bold;
       color: #555;
     }
     .car-img {
+      width: 200px;
+      margin: 20px 0;
       cursor: pointer;
-      width: 180px;
-      margin-bottom: 15px;
       user-select: none;
-      transition: transform 0.15s ease;
-    }
-    .car-img:active {
-      transform: scale(0.95);
     }
     .tabs {
       margin-bottom: 15px;
     }
     .tab-btn {
-      background: #eee;
-      border: none;
+      cursor: pointer;
       padding: 10px 15px;
       margin: 0 5px;
-      border-radius: 6px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background-color 0.3s;
+      border: none;
+      background: #ddd;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: background 0.3s;
     }
     .tab-btn:hover {
-      background: #ddd;
-    }
-    .tab-btn.active {
-      background: #4285f4;
-      color: white;
+      background: #bbb;
     }
     .tab-content {
+      display: none;
       text-align: left;
-      font-size: 1rem;
+    }
+    .tab-content.active {
+      display: block;
     }
     button.upgrade-btn, button.repair-btn {
       display: block;
-      margin: 8px 0;
-      padding: 8px 12px;
       width: 100%;
-      font-weight: 600;
+      margin: 8px 0;
+      padding: 10px;
+      font-size: 1em;
       border-radius: 5px;
       border: 1px solid #888;
-      background-color: #fafafa;
+      background: #eee;
       cursor: pointer;
-      transition: background-color 0.3s;
+      user-select: none;
     }
     button.upgrade-btn:disabled, button.repair-btn:disabled {
-      background-color: #ddd;
+      opacity: 0.5;
       cursor: not-allowed;
-      border-color: #bbb;
-      color: #666;
-    }
-    button.upgrade-btn:hover:not(:disabled),
-    button.repair-btn:hover:not(:disabled) {
-      background-color: #e0f0ff;
-      border-color: #4285f4;
-      color: #222;
     }
     ul#leaderList {
-      padding-left: 20px;
-      margin: 0;
+      list-style: none;
+      padding-left: 0;
     }
     ul#leaderList li {
-      margin-bottom: 6px;
+      margin: 6px 0;
+      font-size: 1.1em;
     }
   </style>
 </head>
@@ -116,29 +102,29 @@
       <p><span class="retro-label">Скорость:</span> <span id="perSecond">0</span> км/ч</p>
     </div>
 
-    <img src="images/moskvich.png" class="car-img" id="clickBtn" alt="Москвич 412">
+    <img src="images/moskvich.png" class="car-img" id="clickBtn" alt="Москвич 412" />
 
     <div class="tabs">
-      <button class="tab-btn active" onclick="showTab('tuning', this)">⚙️ Тюнинг</button>
-      <button class="tab-btn" onclick="showTab('repair', this)">🔧 Ремонт</button>
-      <button class="tab-btn" onclick="showTab('leaders', this)">🏁 Лидеры</button>
+      <button class="tab-btn" onclick="showTab('tuning')">⚙️ Тюнинг</button>
+      <button class="tab-btn" onclick="showTab('repair')">🔧 Ремонт</button>
+      <button class="tab-btn" onclick="showTab('leaders')">🏁 Лидеры</button>
     </div>
 
-    <div class="tab-content" id="tuning">
+    <div id="tuning" class="tab-content active">
       <h3>⚙️ Тюнинг:</h3>
       <button class="upgrade-btn" id="upgrade1">Карбюратор (+5 км/ч) - 10 км</button>
       <button class="upgrade-btn" id="upgrade2">Турбонаддув (+2 км за клик) - 50 км</button>
       <button class="upgrade-btn" id="upgrade3">Спойлер (+20 км/ч) - 200 км</button>
     </div>
 
-    <div class="tab-content" id="repair" style="display:none;">
+    <div id="repair" class="tab-content">
       <h3>🔧 Ремонт:</h3>
       <button class="repair-btn" id="fixClutch">Починить сцепление (100 км)</button>
       <button class="repair-btn" id="addCoolant">Залить тосол (150 км)</button>
       <button class="repair-btn" id="tuneJets">Подкрутить жиклёры (200 км)</button>
     </div>
 
-    <div class="tab-content" id="leaders" style="display:none;">
+    <div id="leaders" class="tab-content">
       <h3>🏁 Лучшие водители:</h3>
       <ul id="leaderList">
         <li>🏅 Легенда капота — 15000 км</li>
@@ -148,164 +134,174 @@
     </div>
   </div>
 
-<script>
-  vkBridge.send('VKWebAppInit');
+  <script>
+    vkBridge.send('VKWebAppInit');
 
-  let score = parseInt(localStorage.getItem('score')) || 0;
-  let perClick = parseInt(localStorage.getItem('perClick')) || 1;
-  let perSecond = parseInt(localStorage.getItem('perSecond')) || 0;
-  let lastWearCheck = parseInt(localStorage.getItem('lastWearCheck')) || 0;
-  let clutchWornOut = localStorage.getItem('clutchWornOut') === 'true' || false;
+    // Основные значения
+    let score = parseInt(localStorage.getItem('score')) || 0;
 
-  const scoreElement = document.getElementById('score');
-  const perSecondElement = document.getElementById('perSecond');
-  const clickBtn = document.getElementById('clickBtn');
+    // Базовые значения без износа
+    let basePerClick = parseFloat(localStorage.getItem('basePerClick')) || 1;
+    let basePerSecond = parseFloat(localStorage.getItem('basePerSecond')) || 0;
 
-  const upgrade1Btn = document.getElementById('upgrade1');
-  const upgrade2Btn = document.getElementById('upgrade2');
-  const upgrade3Btn = document.getElementById('upgrade3');
+    // Текущие значения с учетом износа
+    let perClick = basePerClick;
+    let perSecond = basePerSecond;
 
-  const fixClutchBtn = document.getElementById('fixClutch');
-  const addCoolantBtn = document.getElementById('addCoolant');
-  const tuneJetsBtn = document.getElementById('tuneJets');
+    // Износ сцепления в процентах (0 - 100)
+    let clutchWearLevel = parseFloat(localStorage.getItem('clutchWearLevel')) || 0;
 
-  function updateUI() {
-    scoreElement.textContent = Math.floor(score);
-    perSecondElement.textContent = perSecond;
-    upgrade1Btn.disabled = score < 10;
-    upgrade2Btn.disabled = score < 50;
-    upgrade3Btn.disabled = score < 200;
+    // Последний пробег, при котором проверялся износ
+    let lastWearCheck = parseInt(localStorage.getItem('lastWearCheck')) || 0;
 
-    // Ремонт доступен только если есть износ и достаточно пробега
-    fixClutchBtn.disabled = score < 100 || !clutchWornOut;
-    addCoolantBtn.disabled = score < 150;
-    tuneJetsBtn.disabled = score < 200;
-  }
+    // DOM элементы
+    const scoreElement = document.getElementById('score');
+    const perSecondElement = document.getElementById('perSecond');
+    const clickBtn = document.getElementById('clickBtn');
 
-  function saveProgress() {
-    localStorage.setItem('score', score);
-    localStorage.setItem('perClick', perClick);
-    localStorage.setItem('perSecond', perSecond);
-    localStorage.setItem('lastWearCheck', lastWearCheck);
-    localStorage.setItem('clutchWornOut', clutchWornOut);
-  }
+    const upgrade1Btn = document.getElementById('upgrade1');
+    const upgrade2Btn = document.getElementById('upgrade2');
+    const upgrade3Btn = document.getElementById('upgrade3');
 
-  function showMessage(text) {
-    alert(text);
-  }
+    const fixClutchBtn = document.getElementById('fixClutch');
+    const addCoolantBtn = document.getElementById('addCoolant');
+    const tuneJetsBtn = document.getElementById('tuneJets');
 
-  function checkWear() {
-    if (!clutchWornOut && (score - lastWearCheck >= 500)) {
-      lastWearCheck = score;
-      perClick = Math.max(1, perClick - 1);
-      perSecond = Math.max(0, perSecond - 2);
-      clutchWornOut = true;  // сцепление изношено
-      showMessage("⚙️ Износ сцепления! Скорость и клики снижены. Сделайте ремонт.");
+    // Обновление UI с учётом текущих значений
+    function updateStatsAfterWear() {
+      const wearFactor = clutchWearLevel / 200; // максимум 0.5 (50% снижения)
+      perClick = Math.max(1, basePerClick * (1 - wearFactor));
+      perSecond = Math.max(0, basePerSecond * (1 - wearFactor));
+    }
+
+    function updateUI() {
+      scoreElement.textContent = Math.floor(score);
+      perSecondElement.textContent = perSecond.toFixed(1);
+
+      upgrade1Btn.disabled = score < 10;
+      upgrade2Btn.disabled = score < 50;
+      upgrade3Btn.disabled = score < 200;
+
+      fixClutchBtn.disabled = score < 100 || clutchWearLevel === 0;
+      addCoolantBtn.disabled = score < 150;
+      tuneJetsBtn.disabled = score < 200;
+    }
+
+    function saveProgress() {
+      localStorage.setItem('score', score);
+      localStorage.setItem('basePerClick', basePerClick);
+      localStorage.setItem('basePerSecond', basePerSecond);
+      localStorage.setItem('clutchWearLevel', clutchWearLevel);
+      localStorage.setItem('lastWearCheck', lastWearCheck);
+    }
+
+    function checkWear() {
+      const wearInterval = 500; // каждые 500 км проверяем износ
+      if (score - lastWearCheck >= wearInterval) {
+        lastWearCheck = score;
+
+        // Износ увеличивается с каждым шагом
+        const wearIncrease = 0.5 + (score / 10000); // рост износа с ростом пробега
+        clutchWearLevel = Math.min(100, clutchWearLevel + wearIncrease);
+
+        updateStatsAfterWear();
+
+        alert(`⚙️ Износ сцепления: ${clutchWearLevel.toFixed(1)}%. Характеристики снижены.`);
+
+        updateUI();
+        saveProgress();
+      }
+    }
+
+    function addScore() {
+      score += perClick;
+      checkWear();
       updateUI();
       saveProgress();
     }
-  }
 
-  function addScore() {
-    score += perClick;
-    checkWear();
-    updateUI();
-    saveProgress();
-  }
+    clickBtn.addEventListener('click', addScore);
 
-  clickBtn.addEventListener('click', addScore);
+    upgrade1Btn.addEventListener('click', () => {
+      if (score >= 10) {
+        score -= 10;
+        basePerSecond += 5;
+        updateStatsAfterWear();
+        updateUI();
+        saveProgress();
+      }
+    });
 
-  upgrade1Btn.addEventListener('click', () => {
-    if (score >= 10) {
-      score -= 10;
-      perSecond += 5;
-      updateUI();
-      saveProgress();
-    }
-  });
+    upgrade2Btn.addEventListener('click', () => {
+      if (score >= 50) {
+        score -= 50;
+        basePerClick += 2;
+        updateStatsAfterWear();
+        updateUI();
+        saveProgress();
+      }
+    });
 
-  upgrade2Btn.addEventListener('click', () => {
-    if (score >= 50) {
-      score -= 50;
-      perClick += 2;
-      updateUI();
-      saveProgress();
-    }
-  });
+    upgrade3Btn.addEventListener('click', () => {
+      if (score >= 200) {
+        score -= 200;
+        basePerSecond += 20;
+        updateStatsAfterWear();
+        updateUI();
+        saveProgress();
+      }
+    });
 
-  upgrade3Btn.addEventListener('click', () => {
-    if (score >= 200) {
-      score -= 200;
-      perSecond += 20;
-      updateUI();
-      saveProgress();
-    }
-  });
+    fixClutchBtn.addEventListener('click', () => {
+      if (score >= 100) {
+        if (clutchWearLevel > 0) {
+          score -= 100;
+          clutchWearLevel = 0;
+          updateStatsAfterWear();
+          alert("✅ Сцепление отремонтировано! Износ сброшен.");
+          updateUI();
+          saveProgress();
+        } else {
+          alert("Сцепление в норме, ремонт не нужен.");
+        }
+      } else {
+        alert("Недостаточно пробега для ремонта сцепления!");
+      }
+    });
 
-  fixClutchBtn.addEventListener('click', () => {
-    if (score >= 100) {
-      if (clutchWornOut) {
-        score -= 100;
-        perSecond += 2;
-        clutchWornOut = false; // сцепление починено
-        showMessage("✅ Сцепление отрегулировано!");
+    addCoolantBtn.addEventListener('click', () => {
+      if (score >= 150) {
+        score -= 150;
+        basePerClick += 1;
+        updateStatsAfterWear();
+        alert("✅ Тосол залит!");
         updateUI();
         saveProgress();
       } else {
-        showMessage("Сцепление не изношено.");
+        alert("Недостаточно пробега для заливки тосола!");
       }
-    } else {
-      showMessage('Недостаточно пробега!');
-    }
-  });
+    });
 
-  addCoolantBtn.addEventListener('click', () => {
-    if (score >= 150) {
-      score -= 150;
-      perClick += 1;
-      showMessage("✅ Тосол залит!");
+    tuneJetsBtn.addEventListener('click', () => {
+      if (score >= 200) {
+        score -= 200;
+        basePerClick += 1;
+        basePerSecond += 1;
+        updateStatsAfterWear();
+        alert("✅ Жиклёры подкручены!");
+        updateUI();
+        saveProgress();
+      } else {
+        alert("Недостаточно пробега для подкрутки жиклёров!");
+      }
+    });
+
+    // Автоначисление пробега в секунду
+    setInterval(() => {
+      score += perSecond;
+      checkWear();
       updateUI();
       saveProgress();
-    } else {
-      showMessage('Недостаточно пробега!');
-    }
-  });
+    }, 1000);
 
-  tuneJetsBtn.addEventListener('click', () => {
-    if (score >= 200) {
-      score -= 200;
-      perClick += 1;
-      perSecond += 1;
-      showMessage("✅ Жиклёры подкручены!");
-      updateUI();
-      saveProgress();
-    } else {
-      showMessage('Недостаточно пробега!');
-    }
-  });
-
-  setInterval(() => {
-    score += perSecond;
-    checkWear();
-    updateUI();
-    saveProgress();
-  }, 1000);
-
-  function showTab(tabId, btn) {
-    document.querySelectorAll('.tab-content').forEach(tab => {
-      tab.style.display = 'none';
-    });
-    document.getElementById(tabId).style.display = 'block';
-
-    document.querySelectorAll('.tab-btn').forEach(button => {
-      button.classList.remove('active');
-    });
-    btn.classList.add('active');
-  }
-
-  // Инициализация UI
-  updateUI();
-  showTab('tuning', document.querySelector('.tab-btn.active'));
-</script>
-</body>
-</html>
+    // Вклад
