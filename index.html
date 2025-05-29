@@ -1,53 +1,58 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Москвич 412 Кликер</title>
-<script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
-<link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div id="background"></div>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Москвич 412 Кликер</title>
+  <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+  <style>
+    /* Фон с анимацией */
+    #background {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url('https://raw.githubusercontent.com/prokazin/Mosk/main/images/Fon.JPG');
+      background-repeat: repeat-x;
+      background-size: auto 100%;
+      background-position-x: 0;
+      animation: bgScroll 60s linear infinite;
+      z-index: -1;
+      opacity: 0.9;
+    }
 
-  <div class="container">
-    <h1>МОСКВИЧ</h1>
+    @keyframes bgScroll {
+      from { background-position-x: 0; }
+      to { background-position-x: 1000px; }
+    }
 
-    <div class="stats">
-      <p><span class="retro-label">Пробег:</span> <span id="score">0</span> км</p>
-      <p><span class="retro-label">Скорость:</span> <span id="perSecond">0</span> км/ч</p>
-    </div>
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: transparent;
+      height: 100vh;
+      overflow-x: hidden;
+    }
 
-    <img src="https://raw.githubusercontent.com/prokazin/Mosk/main/images/moskvich.png" alt="Москвич 412" id="clickBtn" class="car-img" />
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 1;
+    }
 
-    <div class="tabs">
-      <button class="tab-btn" data-tab="tuning">⚙️ Тюнинг</button>
-      <button class="tab-btn" data-tab="repair">🔧 Ремонт</button>
-      <button class="tab-btn" data-tab="leaders">🏁 Лидеры</button>
-    </div>
+    h1 {
+      text-align: center;
+      margin-bottom: 12px;
+      font-weight: bold;
+      font-size: 2.5rem;
+      animation: fadeIn 2s ease forwards;
+      opacity: 0;
+    }
 
-    <div class="tab-content" id="tuning">
-      <h3>⚙️ Тюнинг:</h3>
-      <button class="upgrade-btn" id="upgrade1">Карбюратор (+5 км/ч) - 10 км</button>
-      <button class="upgrade-btn" id="upgrade2">Турбонаддув (+2 км за клик) - 50 км</button>
-      <button class="upgrade-btn" id="upgrade3">Спойлер (+20 км/ч) - 200 км</button>
-    </div>
-
-    <div class="tab-content" id="repair">
-      <h3>🔧 Ремонт:</h3>
-      <button class="repair-btn" id="fixClutch">Починить сцепление (100 км)</button>
-      <button class="repair-btn" id="addCoolant">Залить тосол (150 км)</button>
-      <button class="repair-btn" id="tuneJets">Подкрутить жиклёры (200 км)</button>
-    </div>
-
-    <div class="tab-content" id="leaders">
-      <h3>🏁 Лучшие водители:</h3>
-      <ul id="leaderList"></ul>
-    </div>
-  </div>
-
-  <div id="notification"></div>
-
-  <script src="script.js"></script>
-</body>
-</html>
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
