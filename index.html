@@ -209,9 +209,9 @@
 
     <section class="tab-content active" id="tuning" role="tabpanel" tabindex="0" aria-labelledby="tuning-tab">
       <h3>⚙️ Тюнинг:</h3>
-      <button class="upgrade-btn" id="upgrade1">Карбюратор (+8 км/ч) - 10 км</button>
-      <button class="upgrade-btn" id="upgrade2">Турбонаддув (+3 км за клик) - 50 км</button>
-      <button class="upgrade-btn" id="upgrade3">Спойлер (+30 км/ч) - 200 км</button>
+      <button class="upgrade-btn" id="upgrade1">Карбюратор (+4 км/ч) - 10 км</button>
+      <button class="upgrade-btn" id="upgrade2">Турбонаддув (+1.5 км за клик) - 50 км</button>
+      <button class="upgrade-btn" id="upgrade3">Спойлер (+13км/ч) - 200 км</button>
     </section>
 
     <section class="tab-content" id="repair" role="tabpanel" tabindex="0" aria-labelledby="repair-tab">
@@ -237,7 +237,7 @@
     vkBridge.send('VKWebAppInit');
 
     let score = parseInt(localStorage.getItem('score')) || 0;
-    let perClick = parseInt(localStorage.getItem('perClick')) || 2;
+    let perClick = parseInt(localStorage.getItem('perClick')) || 1;
     let perSecond = parseInt(localStorage.getItem('perSecond')) || 0;
 
     let coins = parseInt(localStorage.getItem('coins')) || 0;
