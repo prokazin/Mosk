@@ -3,10 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Москвич 412 Кликер</title>
+<title>Москвич 412 — Хардкор + Рейтинг ВК</title>
 <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
 <style>
-  /* Плавная смена фона день/ночь */
   #background {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -17,19 +16,11 @@
     animation: bgScroll 60s linear infinite;
     z-index: -1;
     opacity: 0.9;
-    transition: background-color 5s ease;
   }
   @keyframes bgScroll {
     from { background-position-x: 0; }
     to { background-position-x: 1000px; }
   }
-  body.day #background {
-    background-color: rgba(135,206,250,0.3);
-  }
-  body.night #background {
-    background-color: rgba(15,15,40,0.7);
-  }
-
   body, html {
     margin: 0; padding: 0; font-family: Arial, sans-serif; background: transparent;
     height: 100vh; overflow-x: hidden;
@@ -44,7 +35,6 @@
     position: relative;
     z-index: 1;
   }
-
   h1 {
     text-align: center;
     margin-bottom: 12px;
@@ -53,11 +43,9 @@
     animation: fadeIn 2s ease forwards;
     opacity: 0;
   }
-
   @keyframes fadeIn {
     to { opacity: 1; }
   }
-
   .stats {
     display: flex;
     justify-content: space-around;
@@ -66,7 +54,6 @@
   .retro-label {
     font-weight: 600;
   }
-
   .car-img {
     display: block;
     margin: 0 auto 15px auto;
@@ -74,7 +61,6 @@
     cursor: pointer;
     user-select: none;
   }
-
   .tabs {
     display: flex;
     justify-content: space-around;
@@ -93,14 +79,12 @@
   .tab-btn:hover {
     background: #2d4373;
   }
-
   .tab-content {
     display: none;
   }
   .tab-content.active {
     display: block;
   }
-
   .upgrade-btn, .repair-btn {
     display: block;
     margin: 8px 0;
@@ -121,7 +105,6 @@
     opacity: 0.5;
     cursor: not-allowed;
   }
-
   #notification {
     position: fixed;
     top: 20px;
@@ -142,22 +125,19 @@
     opacity: 1;
     pointer-events: auto;
   }
-
   #leaderList {
     list-style: none;
     padding-left: 0;
-    max-height: 200px;
-    overflow-y: auto;
+    font-size: 0.9rem;
   }
   #leaderList li {
-    padding: 5px 0;
-    border-bottom: 1px solid #ddd;
+    margin: 4px 0;
   }
-
   #playerRank {
     margin-top: 10px;
-    font-weight: 700;
+    font-weight: 600;
     text-align: center;
+    color: #3b5998;
   }
 </style>
 </head>
@@ -165,290 +145,305 @@
   <div id="background"></div>
 
   <div class="container">
-    <h1>МОСКВИЧ</h1>
+    <h1>МОСКВИЧ 412 - ХАРДКОР + Рейтинг ВК</h1>
 
     <div class="stats">
       <p><span class="retro-label">Пробег:</span> <span id="score">0</span> км</p>
       <p><span class="retro-label">Скорость:</span> <span id="perSecond">0</span> км/ч</p>
     </div>
 
-    <img src="https://raw.githubusercontent.com/prokazin/Mosk/main/images/moskvich.png" alt="Москвич 412" id="clickBtn" class="car-img" draggable="false">
+    <img src="https://raw.githubusercontent.com/prokazin/Mosk/main/images/moskvich.png" alt="Москвич 412" id="clickBtn" class="car-img">
 
     <div class="tabs">
       <button class="tab-btn" data-tab="tuning">⚙️ Тюнинг</button>
       <button class="tab-btn" data-tab="repair">🔧 Ремонт</button>
-      <button class="tab-btn" data-tab="leaders">🏁 Лидеры</button>
+      <button class="tab-btn" data-tab="leaders">🏁 Лидеры ВК</button>
     </div>
 
     <div class="tab-content" id="tuning">
       <h3>⚙️ Тюнинг:</h3>
-      <button class="upgrade-btn" id="upgrade1">Карбюратор (+3 км/ч) - 5 км</button>
-      <button class="upgrade-btn" id="upgrade2">Турбонаддув (+1 км за клик) - 25 км</button>
-      <button class="upgrade-btn" id="upgrade3">Спойлер (+10 км/ч) - 100 км</button>
+      <button class="upgrade-btn" id="upgrade1">Карбюратор (+1 км/ч) - 50 км</button>
+      <button class="upgrade-btn" id="upgrade2">Турбонаддув (+0.5 км за клик) - 200 км</button>
+      <button class="upgrade-btn" id="upgrade3">Спойлер (+5 км/ч) - 800 км</button>
     </div>
 
     <div class="tab-content" id="repair">
       <h3>🔧 Ремонт:</h3>
-      <button class="repair-btn" id="fixClutch">Починить сцепление (50 км)</button>
-      <button class="repair-btn" id="addCoolant">Залить тосол (75 км)</button>
-      <button class="repair-btn" id="tuneJets">Подкрутить жиклёры (100 км)</button>
+      <button class="repair-btn" id="fixClutch">Починить сцепление (250 км)</button>
+      <button class="repair-btn" id="addCoolant">Залить тосол (400 км)</button>
+      <button class="repair-btn" id="tuneJets">Подкрутить жиклёры (600 км)</button>
     </div>
 
     <div class="tab-content" id="leaders">
-      <h3>🏁 Лучшие водители:</h3>
-      <ul id="leaderList">
-        <li>Загрузка...</li>
-      </ul>
+      <h3>🏁 Лучшие водители ВКонтакте:</h3>
+      <ul id="leaderList"><li>Загрузка рейтинга...</li></ul>
       <div id="playerRank"></div>
     </div>
   </div>
 
   <div id="notification"></div>
 
-<script>
-  const APP_ID = 53646023;
+  <script>
+    const leaderboardId = 1; // ID рейтинга из настроек VK Mini Apps
+    let score = parseFloat(localStorage.getItem('score')) || 0;
+    let perClick = parseFloat(localStorage.getItem('perClick')) || 0.1;
+    let perSecond = parseFloat(localStorage.getItem('perSecond')) || 0;
+    let lastWearCheck = parseFloat(localStorage.getItem('lastWearCheck')) || 0;
 
-  vkBridge.send('VKWebAppInit');
+    const scoreElement = document.getElementById('score');
+    const perSecondElement = document.getElementById('perSecond');
+    const clickBtn = document.getElementById('clickBtn');
 
-  let score = parseFloat(localStorage.getItem('score')) || 0;
-  let perClick = parseInt(localStorage.getItem('perClick')) || 1;
-  let perSecond = parseInt(localStorage.getItem('perSecond')) || 0;
-  let lastWearCheck = parseInt(localStorage.getItem('lastWearCheck')) || 0;
+    const upgrade1Btn = document.getElementById('upgrade1');
+    const upgrade2Btn = document.getElementById('upgrade2');
+    const upgrade3Btn = document.getElementById('upgrade3');
 
-  const scoreElement = document.getElementById('score');
-  const perSecondElement = document.getElementById('perSecond');
-  const clickBtn = document.getElementById('clickBtn');
+    const fixClutchBtn = document.getElementById('fixClutch');
+    const addCoolantBtn = document.getElementById('addCoolant');
+    const tuneJetsBtn = document.getElementById('tuneJets');
 
-  const upgrade1Btn = document.getElementById('upgrade1');
-  const upgrade2Btn = document.getElementById('upgrade2');
-  const upgrade3Btn = document.getElementById('upgrade3');
+    const notification = document.getElementById('notification');
+    let notificationTimeout;
 
-  const fixClutchBtn = document.getElementById('fixClutch');
-  const addCoolantBtn = document.getElementById('addCoolant');
-  const tuneJetsBtn = document.getElementById('tuneJets');
+    const leaderList = document.getElementById('leaderList');
+    const playerRankDiv = document.getElementById('playerRank');
 
-  const notification = document.getElementById('notification');
-  let notificationTimeout;
+    function showNotification(text) {
+      clearTimeout(notificationTimeout);
+      notification.textContent = text;
+      notification.classList.add('show');
+      notificationTimeout = setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3500);
+    }
 
-  // Показ уведомления с плавным исчезновением
-  function showNotification(text) {
-    clearTimeout(notificationTimeout);
-    notification.textContent = text;
-    notification.classList.add('show');
-    notificationTimeout = setTimeout(() => {
-      notification.classList.remove('show');
-    }, 3500);
-  }
+    function updateUI() {
+      scoreElement.textContent = Math.floor(score);
+      perSecondElement.textContent = perSecond.toFixed(1);
+      upgrade1Btn.disabled = score < 50;
+      upgrade2Btn.disabled = score < 200;
+      upgrade3Btn.disabled = score < 800;
 
-  function updateUI() {
-    scoreElement.textContent = Math.floor(score);
-    perSecondElement.textContent = perSecond;
-    upgrade1Btn.disabled = score < 5;
-    upgrade2Btn.disabled = score < 25;
-    upgrade3Btn.disabled = score < 100;
+      fixClutchBtn.disabled = score < 250;
+      addCoolantBtn.disabled = score < 400;
+      tuneJetsBtn.disabled = score < 600;
+    }
 
-    fixClutchBtn.disabled = score < 50;
-    addCoolantBtn.disabled = score < 75;
-    tuneJetsBtn.disabled = score < 100;
-  }
+    function saveProgress() {
+      localStorage.setItem('score', score);
+      localStorage.setItem('perClick', perClick);
+      localStorage.setItem('perSecond', perSecond);
+      localStorage.setItem('lastWearCheck', lastWearCheck);
+    }
 
-  function saveProgress() {
-    localStorage.setItem('score', score);
-    localStorage.setItem('perClick', perClick);
-    localStorage.setItem('perSecond', perSecond);
-    localStorage.setItem('lastWearCheck', lastWearCheck);
-  }
-
-  // Износ сцепления: чем больше пробег, тем реже износ
-  function checkWear() {
-    const wearThreshold = 300 + Math.floor(score / 1500) * 700;
-    if (score - lastWearCheck >= wearThreshold) {
-      lastWearCheck = score;
-      perClick = Math.max(1, perClick - 1);
-      perSecond = Math.max(0, perSecond - 1);
-      showNotification("⚙️ Износ сцепления! Скорость и клики снижены.");
+    // Клик по машине
+    clickBtn.addEventListener('click', () => {
+      if (clickBtn.disabled) return; // Блок при износе
+      score += perClick;
       updateUI();
       saveProgress();
+      checkWear();
+      sendScoreToVK();
+    });
+
+    // Апгрейды
+    upgrade1Btn.addEventListener('click', () => {
+      if (score >= 50) {
+        score -= 50;
+        perSecond += 1;
+        showNotification("Улучшен карбюратор! +1 км/ч");
+        updateUI();
+        saveProgress();
+        sendScoreToVK();
+      }
+    });
+
+    upgrade2Btn.addEventListener('click', () => {
+      if (score >= 200) {
+        score -= 200;
+        perClick += 0.5;
+        showNotification("Установлен турбонаддув! +0.5 км за клик");
+        updateUI();
+        saveProgress();
+        sendScoreToVK();
+      }
+    });
+
+    upgrade3Btn.addEventListener('click', () => {
+      if (score >= 800) {
+        score -= 800;
+        perSecond += 5;
+        showNotification("Добавлен спойлер! +5 км/ч");
+        updateUI();
+        saveProgress();
+        sendScoreToVK();
+      }
+    });
+
+    // Ремонт
+    fixClutchBtn.addEventListener('click', () => {
+      if (score >= 250) {
+        score -= 250;
+        perClick += 0.2;
+        perSecond += 0.5;
+        showNotification("Сцепление отрегулировано!");
+        updateUI();
+        saveProgress();
+        sendScoreToVK();
+      }
+    });
+
+    addCoolantBtn.addEventListener('click', () => {
+      if (score >= 400) {
+        score -= 400;
+        perClick += 0.1;
+        perSecond += 0.3;
+        showNotification("Тосол залит, двигатель в порядке!");
+        updateUI();
+        saveProgress();
+        sendScoreToVK();
+      }
+    });
+
+    tuneJetsBtn.addEventListener('click', () => {
+      if (score >= 600) {
+        score -= 600;
+        perClick += 0.3;
+        perSecond += 0.7;
+        showNotification("Жиклёры настроены! Машина едет лучше!");
+        updateUI();
+        saveProgress();
+        sendScoreToVK();
+      }
+    });
+
+    // Износ сцепления и блокировка кликов
+    function checkWear() {
+      const wearThreshold = 200 + Math.floor(score / 500) * 100;
+      if (score - lastWearCheck >= wearThreshold) {
+        lastWearCheck = score;
+        perClick = Math.max(0.05, perClick - 3);
+        perSecond = Math.max(0, perSecond - 6);
+        showNotification("⚙️ Серьёзный износ сцепления! Скорость и клики резко снижены. Клики заблокированы на 5 секунд.");
+        updateUI();
+        saveProgress();
+
+        clickBtn.disabled = true;
+        setTimeout(() => {
+          clickBtn.disabled = false;
+          showNotification("🔧 Сцепление готово к работе!");
+        }, 5000);
+      }
     }
-  }
 
-  function addScore() {
-    score += perClick;
-    checkWear();
-    updateUI();
-    saveProgress();
-  }
-
-  clickBtn.addEventListener('click', addScore);
-
-  upgrade1Btn.addEventListener('click', () => {
-    if (score >= 5) {
-      score -= 5;
-      perSecond += 3;
+    // Автоматический прирост очков (очень медленный)
+    setInterval(() => {
+      score += perSecond / 20; // В 10 раз медленнее
       updateUI();
       saveProgress();
-    }
-  });
+      sendScoreToVK();
+    }, 1000);
 
-  upgrade2Btn.addEventListener('click', () => {
-    if (score >= 25) {
-      score -= 25;
-      perClick += 1;
-      updateUI();
-      saveProgress();
-    }
-  });
+    // Вкладки
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        contents.forEach(c => c.classList.remove('active'));
+        tabs.forEach(t => t.classList.remove('active'));
+        document.getElementById(tab.dataset.tab).classList.add('active');
+        tab.classList.add('active');
 
-  upgrade3Btn.addEventListener('click', () => {
-    if (score >= 100) {
-      score -= 100;
-      perSecond += 10;
-      updateUI();
-      saveProgress();
-    }
-  });
-
-  fixClutchBtn.addEventListener('click', () => {
-    if (score >= 50) {
-      score -= 50;
-      perClick = Math.max(perClick, 1);
-      perSecond = Math.max(perSecond, 0);
-      lastWearCheck = score; // сбросить износ
-      showNotification("🔧 Сцепление починено.");
-      updateUI();
-      saveProgress();
-    }
-  });
-
-  addCoolantBtn.addEventListener('click', () => {
-    if (score >= 75) {
-      score -= 75;
-      perClick += 2;
-      showNotification("🔧 Тосол залит. Клики увеличены.");
-      updateUI();
-      saveProgress();
-    }
-  });
-
-  tuneJetsBtn.addEventListener('click', () => {
-    if (score >= 100) {
-      score -= 100;
-      perSecond += 5;
-      showNotification("🔧 Жиклёры настроены. Скорость увеличена.");
-      updateUI();
-      saveProgress();
-    }
-  });
-
-  // Автонакрутка очков в секунду
-  setInterval(() => {
-    score += perSecond;
-    checkWear();
-    updateUI();
-    saveProgress();
-    sendScoreToVK();
-  }, 1000);
-
-  // Работа с табами
-  const tabButtons = document.querySelectorAll('.tab-btn');
-  const tabContents = document.querySelectorAll('.tab-content');
-
-  tabButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const target = btn.getAttribute('data-tab');
-      tabContents.forEach(tc => {
-        tc.classList.toggle('active', tc.id === target);
+        if (tab.dataset.tab === 'leaders') {
+          loadLeaderboard();
+        }
       });
     });
-  });
-  // Показываем первый таб по умолчанию
-  tabContents[0].classList.add('active');
+    tabs[0].click();
 
-  // День и ночь - смена фона по времени
-  function updateDayNight() {
-    const hour = new Date().getHours();
-    if (hour >= 7 && hour < 20) {
-      document.body.classList.add('day');
-      document.body.classList.remove('night');
-    } else {
-      document.body.classList.add('night');
-      document.body.classList.remove('day');
-    }
-  }
-  updateDayNight();
-  setInterval(updateDayNight, 60000);
+    // Инициализация VK Bridge и отправка очков
+    vkBridgeInit();
 
-  // --- VK Mini Apps integration ---
-
-  // Отправка очков в таблицу лидеров ВКонтакте
-  async function sendScoreToVK() {
-    try {
-      await vkBridge.send("VKWebAppGetUserInfo").then(user => {
-        vkBridge.send("VKWebAppCallAPIMethod", {
-          "method": "secure.setScore",
-          "params": {
-            "user_id": user.id,
-            "score": Math.floor(score),
-            "access_token": "",
-            "v": "5.131",
-            "client_id": APP_ID,
-          }
-        });
-      });
-    } catch(e) {
-      console.warn("Не удалось отправить очки в VK:", e);
-    }
-  }
-
-  // Получение топа лидеров и позиции пользователя
-  async function loadLeaderboard() {
-    try {
-      const user = await vkBridge.send("VKWebAppGetUserInfo");
-      const response = await vkBridge.send("VKWebAppCallAPIMethod", {
-        method: "secure.getLeaderboard",
-        params: {
-          type: "global",
-          global: 1,
-          extended: 1,
-          v: "5.131",
-          client_id: APP_ID
-        }
-      });
-      if (response.response) {
-        const leaders = response.response.items || [];
-        const leaderList = document.getElementById('leaderList');
-        leaderList.innerHTML = '';
-        leaders.forEach((item, idx) => {
-          leaderList.insertAdjacentHTML('beforeend', 
-            `<li><b>${idx + 1}.</b> ${item.user.first_name} ${item.user.last_name} — ${item.score} км</li>`
-          );
-        });
-
-        // Позиция текущего игрока
-        const currentUserEntry = leaders.find(l => l.user.id === user.id);
-        const playerRank = document.getElementById('playerRank');
-        if (currentUserEntry) {
-          playerRank.textContent = `Ваше место в рейтинге: ${leaders.indexOf(currentUserEntry) + 1} (очки: ${currentUserEntry.score})`;
-        } else {
-          playerRank.textContent = `Вы пока не в рейтинге.`;
-        }
+    async function vkBridgeInit() {
+      try {
+        await vkBridge.send('VKWebAppInit');
+      } catch (e) {
+        console.error('VK Bridge init failed:', e);
       }
-    } catch(e) {
-      console.warn("Ошибка загрузки лидеров VK:", e);
-      const leaderList = document.getElementById('leaderList');
-      leaderList.innerHTML = '<li>Ошибка загрузки рейтинга.</li>';
     }
-  }
 
-  // Обновлять рейтинг при открытии таба "Лидеры"
-  document.querySelector('[data-tab="leaders"]').addEventListener('click', loadLeaderboard);
+    async function sendScoreToVK() {
+      if (!window.vkBridge) return;
+      try {
+        await vkBridge.send('VKWebAppSetLeaderboardScore', {
+          leaderboard_id: leaderboardId,
+          score: Math.floor(score),
+        });
+      } catch (e) {
+        // Ошибки посылки очков не критичны
+        // console.log('Ошибка отправки очков в рейтинг ВК:', e);
+      }
+    }
 
-  // Изначально отправить очки и загрузить рейтинг
-  sendScoreToVK();
-  loadLeaderboard();
+    async function loadLeaderboard() {
+      leaderList.innerHTML = '<li>Загрузка рейтинга...</li>';
+      playerRankDiv.textContent = '';
+      try {
+        const topResponse = await vkBridge.send('VKWebAppGetLeaderboardEntries', {
+          leaderboard_id: leaderboardId,
+          quantity: 10,
+          offset: 0,
+        });
 
-  updateUI();
+        const entries = topResponse.entries || [];
+        if (entries.length === 0) {
+          leaderList.innerHTML = '<li>Рейтинг пуст</li>';
+          return;
+        }
+        leaderList.innerHTML = '';
+        entries.forEach((entry, idx) => {
+          const li = document.createElement('li');
+          li.textContent = `${idx + 1}. ${entry.user.first_name} ${entry.user.last_name} — ${entry.score} км`;
+          leaderList.appendChild(li);
+        });
 
-</script>
+        // Получаем место текущего пользователя
+        const userRankResponse = await vkBridge.send('VKWebAppGetLeaderboardEntry', {
+          leaderboard_id: leaderboardId,
+        });
+
+        if (userRankResponse.entry) {
+          playerRankDiv.textContent = `Ваш рейтинг: ${userRankResponse.entry.rank} место, очки: ${userRankResponse.entry.score} км`;
+        } else {
+          playerRankDiv.textContent = 'Вы ещё не в рейтинге';
+        }
+      } catch (e) {
+        leaderList.innerHTML = '<li>Ошибка загрузки рейтинга</li>';
+        playerRankDiv.textContent = '';
+        console.error('Ошибка загрузки рейтинга ВК:', e);
+      }
+    }
+
+    function updateUI() {
+      scoreElement.textContent = Math.floor(score);
+      perSecondElement.textContent = perSecond.toFixed(1);
+      upgrade1Btn.disabled = score < 50;
+      upgrade2Btn.disabled = score < 200;
+      upgrade3Btn.disabled = score < 800;
+
+      fixClutchBtn.disabled = score < 250;
+      addCoolantBtn.disabled = score < 400;
+      tuneJetsBtn.disabled = score < 600;
+    }
+
+    function saveProgress() {
+      localStorage.setItem('score', score);
+      localStorage.setItem('perClick', perClick);
+      localStorage.setItem('perSecond', perSecond);
+      localStorage.setItem('lastWearCheck', lastWearCheck);
+    }
+
+    updateUI();
+  </script>
 </body>
 </html>
