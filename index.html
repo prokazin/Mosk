@@ -2,31 +2,108 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Москвич 412 Кликер</title>
   <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
   <style>
+    /* Анимация движения фона */
+    @keyframes bgScroll {
+      0% {
+        background-position: 0% center;
+      }
+      100% {
+        background-position: 100% center;
+      }
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-image: url('https://raw.githubusercontent.com/prokazin/Mosk/main/images/fon.png');
+      background-repeat: repeat-x;
+      background-size: cover;
+      animation: bgScroll 60s linear infinite;
+      font-family: Arial, sans-serif;
+      color: white;
+      text-align: center;
+      height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      background-color: rgba(0, 0, 0, 0.55);
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
     .car-img {
       width: 300px;
       cursor: pointer;
       display: block;
       margin: 20px auto;
+      position: relative;
+      z-index: 2;
     }
+
     .tabs {
-      text-align: center;
       margin: 20px 0;
     }
+
     .tab-btn {
       margin: 0 10px;
       padding: 10px 15px;
       cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
     }
+
+    .tab-btn:hover {
+      background-color: rgba(255, 255, 255, 0.4);
+    }
+
     .tab-content {
       display: none;
       text-align: center;
+      margin-top: 20px;
     }
+
     .tab-content.active {
       display: block;
+    }
+
+    .upgrade-btn, .repair-btn {
+      margin: 8px;
+      padding: 10px 15px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: rgba(255, 255, 255, 0.3);
+      color: white;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .upgrade-btn:disabled, .repair-btn:disabled {
+      background-color: rgba(255, 255, 255, 0.1);
+      cursor: not-allowed;
+      color: #aaa;
+    }
+
+    .upgrade-btn:hover:not(:disabled), .repair-btn:hover:not(:disabled) {
+      background-color: rgba(255, 255, 255, 0.6);
+    }
+
+    .stats p {
+      font-size: 1.2em;
+      margin: 5px 0;
     }
   </style>
 </head>
@@ -34,9 +111,9 @@
   <div class="container">
     <h1>МОСКВИЧ</h1>
 
-    <div class="stats" style="text-align:center;">
-      <p><span class="retro-label">Пробег:</span> <span id="score">0</span> км</p>
-      <p><span class="retro-label">Скорость:</span> <span id="perSecond">0</span> км/ч</p>
+    <div class="stats">
+      <p>Пробег: <span id="score">0</span> км</p>
+      <p>Скорость: <span id="perSecond">0</span> км/ч</p>
     </div>
 
     <img src="https://raw.githubusercontent.com/prokazin/Mosk/main/images/moskvich.png" alt="Москвич 412" class="car-img" id="clickBtn" />
@@ -227,10 +304,8 @@
     document.getElementById(tabId).classList.add('active');
   }
 
-  // Показать первую вкладку по умолчанию
   showTab('tuning');
   updateUI();
 </script>
-
 </body>
 </html>
